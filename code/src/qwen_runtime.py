@@ -105,21 +105,15 @@ class QwenVLRuntime:
 
         s = image_input.strip()
 
-        # 1) 本地路径
         if os.path.exists(s):
             return Image.open(s).convert("RGB")
 
-        # 2) data URL
         if s.startswith("data:"):
             if "," not in s:
                 raise ValueError("Invalid data URL image input: missing comma separator.")
             s = s.split(",", 1)[1].strip()
-
-        # 3) 纯 base64
-        # 去掉空白/换行
+            
         s = "".join(s.split())
-
-        # 自动补齐 padding
         pad_len = (-len(s)) % 4
         if pad_len:
             s += "=" * pad_len
