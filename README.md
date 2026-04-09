@@ -1,9 +1,7 @@
 <div align="center">
   <h1>🔎 DeepScan: A Training-Free Framework for Visually Grounded Reasoning in Large Vision-Language Models</h1>
   <p>
-    <em>Official implementation of the CVPR 2026 paper<br>
-    <!-- <strong>“DeepScan: A Training-Free Framework for Visually Grounded Reasoning in Large Vision-Language Models”</strong> -->
-    </em>
+    <em>Official implementation of the CVPR 2026 paper</em>
   </p>
 
   <p>
@@ -14,15 +12,14 @@
   </p>
 </div>
 
-> **TL;DR.** DeepScan is a **training-free** framework for **visually grounded reasoning** in LVLMs. Instead of relying on brittle one-shot, coarse-to-fine localization, it adopts a **bottom-up** pipeline: **Hierarchical Scanning** for cue discovery and evidence recovery, **Refocusing** for context-optimal evidence views, and **Evidence-Enhanced Reasoning** for final answer generation from multi-granular evidence memory. DeepScan achieves **90.6%** on **V\*** with **Qwen2.5-VL-7B**, and scales consistently across LVLM architectures and model sizes.
+> **TL;DR.** DeepScan is a **training-free** framework for **visually grounded reasoning** in LVLMs. Instead of relying on brittle one-shot, coarse-to-fine localization, it adopts a **bottom-up** pipeline: **Hierarchical Scanning** for cue discovery and evidence recovery, **Refocusing** for context-optimal evidence views, and **Evidence-Enhanced Reasoning** for final answer generation from multi-granular evidence memory.
 
 ---
 
 ## 🔥 News
-- [ ] **TODO.** Release the evaluation scripts.
-- [x] **2026-03.** The core codebase is open-sourced !
+- [ ] Release the evaluation scripts.
+- [x] **2026-03.** The core codebase is open-sourced.
 - [x] **2026-02.** DeepScan was accepted to **CVPR 2026** main track.
-
 
 ---
 
@@ -57,240 +54,283 @@ Unlike RL-based visually grounded reasoning methods, DeepScan is **plug-and-play
 ## 🏗 Repository Structure
 ```text
 DeepScan/
-├── scripts/
-│   ├── blip_server/       # Search-expert service (BLIP-ITM + Grad-CAM attention)
-│   ├── expert_server/     # Visual-expert service (LangSAM-based detection)
-│   ├── lmm_server/        # LVLM serving scripts (e.g., LLaVA / Qwen backends)
-│   ├── sam2_server/       # SAM2 point-prompt segmentation service
-│   ├── pope/
-│   └── vstar/
-├── src/
-│   ├── eval.py            # Evaluation script for prediction files
-│   ├── qwen_runtime.py    # Local Qwen-based runtime for LVLM querying
-│   ├── run.py             # Main evaluation / inference entry point
-│   ├── utils.py           # Common utilities
-│   └── policies/
-│       ├── deepscan.py    # DeepScan policy implementation
-│       ├── visual_grounding.py
-│       ├── control_point_sam.py
-│       ├── client.py
-│       ├── mstc.py
-│       └── ...
+├── code/
+│   ├── scripts/
+│   │   ├── blip_server/       # Search-expert service
+│   │   ├── expert_server/     # Visual-expert service
+│   │   ├── sam2_server/       # SAM2 segmentation service
+│   │   ├── lmm_server/        # LVLM serving / runtime scripts
+│   │   ├── pope/
+│   │   └── vstar/
+│   └── src/
+│       ├── eval.py
+│       ├── qwen_runtime.py
+│       ├── run.py
+│       ├── utils.py
+│       └── policies/
+├── lavis.yml
+├── langsam.yml
+├── dyfo.yml
 └── README.md
-```
+🛠 Environment Setup
 
----
+DeepScan uses three separate environments:
 
-## 🛠 Preparation
-
-### 1) Clone
-```bash
+lavis for the search expert
+langsam for the visual expert and SAM2
+deepscan for the LVLM runtime / main pipeline
+1) Clone the repository
 git clone https://github.com/YChenL/DeepScan
 cd DeepScan
-```
-
-### 2) Create environment
-We recommend **Python 3.10+**.
-
-```bash
-conda create -n deepscan python=3.10 -y
+2) Create the environments
+Search expert environment
+conda env create -f lavis.yml
+conda activate lavis
+Visual expert environment
+conda env create -f langsam.yml
+conda activate langsam
+DeepScan runtime environment
+conda env create -f dyfo.yml
 conda activate deepscan
-```
+🔧 Required Monkey Patch for LAVIS
 
-### 3) Install core dependencies
-This codebase is built around a service-oriented pipeline. At minimum, you will need PyTorch, Transformers, OpenCV, FastAPI, and the supporting packages used by the search / visual experts and LVLM runtime.
+After creating the lavis environment, please patch the following file:
 
-```bash
-pip install -r requirements.txt
-```
+your_env_path/lavis/models/blip_models/blip_image_text_matching.py
 
-Depending on your local setup, you will also need the expert-side dependencies used in this repository:
+Replace the following line at Line 76, Line 109, and Line 122:
 
-```bash
-# Search expert
-pip install salesforce-lavis
+# encoder_input_ids[:, 0] = self.tokenizer.enc_token_id  # extra code
+encoder_input_ids[:, 0] = self.tokenizer.convert_tokens_to_ids("[ENC]")
 
-# Visual expert
-pip install lang-sam
+In other words, if the original code uses:
 
-# SAM2 backend
-# Install from your local / official SAM2 checkout as needed.
-```
+encoder_input_ids[:, 0] = self.tokenizer.enc_token_id
 
-### 4) Prepare checkpoints and local paths
-The provided code snapshot contains several **environment-specific local paths / placeholders** that should be updated before launch. In particular, check:
+please replace it with:
 
-- `scripts/blip_server/blip_service.py`
-- `scripts/expert_server/model_service.py`
-- `scripts/sam2_server/sam2_service.py`
-- `scripts/lmm_server/llava_server.sh`
-- `scripts/lmm_server/qwen_server.sh`
+encoder_input_ids[:, 0] = self.tokenizer.convert_tokens_to_ids("[ENC]")
 
-Before running the pipeline, replace local placeholders with the actual paths for:
-- the **BLIP-ITM** tokenizer / checkpoint,
-- the **LangSAM / GroundingDINO / SAM2** checkpoints,
-- the **SAM2 repository root / config / weights**,
-- and the **LVLM checkpoint** you want to serve.
+This patch is required for the BLIP-based search expert used in our pipeline.
 
----
+📦 Model Preparation
 
-## 🧠 Experts and Backbones
+Please download the following checkpoints from Hugging Face:
+
+BERT tokenizer / backbone
+google-bert/bert-base-uncased
+GroundingDINO
+IDEA-Research/grounding-dino-base
+SAM2
+facebook/sam2.1-hiera-small
+facebook/sam2.1-hiera-base-plus
+LVLM backbone
+Qwen/Qwen3-VL-8B-Instruct
+Example
+huggingface-cli download google-bert/bert-base-uncased \
+    --local-dir bert-base-uncased \
+    --local-dir-use-symlinks False \
+    --resume-download
+
+You can download the other checkpoints in the same way by replacing the model name and local directory.
+
+Additional requirement for SAM2
+
+Please place the checkpoint from:
+
+facebook/sam2.1-hiera-base-plus
+
+into the checkpoints directory of the sam2 package inside the langsam environment.
+
+🛣 Path Configuration
+
+Before launching the system, you need to replace several environment-specific local paths in the code.
+
+1) BLIP tokenizer path
+
+File:
+
+DeepScan/code/scripts/blip_server/blip_service.py
+
+Set:
+
+LOCAL_TOKENIZER_PATH = "your/local/google-bert/bert-base-uncased/path"
+2) LangSAM / GroundingDINO / SAM2 checkpoint paths
+
+File:
+
+DeepScan/code/scripts/expert_server/model_service.py
+
+Set the checkpoint paths in the LangSAM(...) initialization, e.g.
+
+self.model = LangSAM(
+    sam_type="sam2.1_hiera_small",
+    ckpt_path_sam="/your/local/facebook/sam2.1-hiera-small/sam2.1_hiera_small.pt",
+    ckpt_path_gdino="/your/local/IDEA-Research/grounding-dino-base"
+)
+3) SAM2 repository root
+
+File:
+
+DeepScan/code/scripts/sam2_server/sam2_service.py
+
+Set:
+
+SAM2_REPO_ROOT = Path("/your/envs/langsam/lib/python3.11/site-packages/sam2")
+
+This should be the absolute path to the installed sam2 package inside your langsam environment.
+
+📂 Dataset Preparation
+
+Please download the evaluation datasets from:
+
+oking0197/Dyfo
+
+After extraction, organize them as:
+
+DeepScan/
+├── code
+│   ├── scripts
+│   └── src
+└── playground
+    └── data
+        └── eval
+            ├── vstar
+            └── ...
+
+In other words, the benchmark folders should be placed under:
+
+playground/data/eval/
+🧠 Experts and Backbones
+
 DeepScan augments an LVLM with two plug-and-play experts:
 
-### A) Search Expert
-The paper uses **BLIP-ITM** as the search expert to produce patch-wise Grad-CAM attention maps for local cue exploration.
+A) Search Expert
 
-### B) Visual Expert
+The paper uses BLIP-ITM as the search expert to produce patch-wise Grad-CAM attention maps for local cue exploration.
+
+B) Visual Expert
+
 The visual expert exposes two primitives:
-- **point-prompt segmentation**, and
-- **text-conditioned detection**.
 
-In the paper, DeepScan uses **LangSAM** as the visual expert. In this repository snapshot, the visual grounding pipeline is implemented through the combination of:
-- a **LangSAM-based detection service**, and
-- a **SAM2 point-prompt segmentation service**.
+point-prompt segmentation
+text-conditioned detection
 
-### C) LVLM Backbones
-The paper evaluates DeepScan on five LVLMs:
-- **LLaVA-1.5-7B**
-- **Qwen2-VL-7B**
-- **Qwen2.5-VL-7B**
-- **Qwen2.5-VL-32B**
-- **Qwen2.5-VL-72B**
+In our implementation, the visual grounding pipeline is realized via:
 
-This repository also includes example serving scripts for LLaVA / Qwen-style backends under `scripts/lmm_server/`.
+a LangSAM-based detection service
+a SAM2 point-prompt segmentation service
+C) LVLM Backbone
 
----
+For local inference, you may serve a compatible LVLM backend such as:
 
-## 🚀 Usage
+Qwen3-VL-8B-Instruct
 
-### A) Start the services
-DeepScan is organized as a multi-service inference pipeline. In a typical setup, you should launch:
+The repository also includes example scripts for Qwen-style runtime under code/scripts/.
 
-1. the **search-expert server**,
-2. the **visual-expert server**,
-3. the **SAM2 segmentation server**, and
-4. the **LVLM server / runtime**.
+🚀 Launch the Servers
 
-The corresponding launch scripts are under:
+DeepScan is a multi-service pipeline. In a typical setup, you should start:
 
-```text
-scripts/blip_server/
-scripts/expert_server/
-scripts/sam2_server/
-scripts/lmm_server/
-```
+the visual-expert server
+the search-expert server
+the SAM2 segmentation server
 
-Please adapt ports, checkpoint paths, and CUDA device assignment to your environment before starting them.
+For example, if you have one GPU reserved for expert services (e.g. cuda:0), you can launch them in separate terminals as follows:
 
-### B) Run DeepScan on a benchmark / dataset
-The main evaluation entry point is `src/run.py`.
+On cuda:0
+Visual expert
+conda activate langsam
+bash DeepScan/code/scripts/expert_server/start_server.sh
+Search expert
+conda activate lavis
+bash DeepScan/code/scripts/blip_server/start_server.sh
+SAM2 server
+conda activate langsam
+bash DeepScan/code/scripts/sam2_server/start_server.sh
 
-```bash
-python src/run.py \
-  --model-path Qwen/Qwen2.5-VL-7B-Instruct \
-  --question-file path/to/questions.tsv \
-  --answers-file outputs/deepscan_predictions.jsonl \
-  --method_name deepscan \
-  --temperature 0.0
-```
+Note: Please adjust CUDA device assignment, ports, and checkpoint paths in the corresponding scripts before launch.
 
-Useful arguments include:
+▶️ Run DeepScan
 
-```text
---model-path      LVLM checkpoint / served model name
---question-file   Input question file (TSV)
---answers-file    Output prediction file (JSONL)
---method_name     Method name, e.g. deepscan
---num-chunks      Number of data chunks for parallel evaluation
---chunk-idx       Current chunk index
---temperature     Sampling temperature
---image-size      Image resize limit used by the client runtime
-```
+After the expert services are running, use the deepscan environment to launch the main pipeline.
 
-### C) Evaluate predictions
-After inference, you can evaluate predictions with:
+For example, if your LVLM inference runs on cuda:1 or other remaining GPUs:
 
-```bash
-python src/eval.py --path outputs/deepscan_predictions.jsonl
-```
----
+conda activate deepscan
+bash DeepScan/code/scripts/vstar/stream_vstar_qwen.sh
 
-## 🧩 Prompting Roles in DeepScan
+You may also invoke the main entry point directly through code/src/run.py, depending on your local setup.
+
+🧩 Prompting Roles in DeepScan
+
 DeepScan relies on three lightweight LVLM query templates:
 
-1. **Evidence Decomposition**
-   - Extract the objects mentioned in the question.
-   - Used to decide whether the question is single-object or multi-object, and thus which patch size to use.
+Evidence Decomposition
+Extract the objects mentioned in the question.
+Used to decide whether the question is single-object or multi-object, and thus which patch size to use.
+Evidence Judgment
+Judge whether a cropped evidence candidate actually contains clues for answering the question.
+View Completeness Justification
+Judge whether a refocused view fully contains every target object without truncation.
+📈 Results at a Glance
 
-2. **Evidence Judgment**
-   - Judge whether a cropped evidence candidate actually contains clues for answering the question.
-
-3. **View Completeness Justification**
-   - Judge whether a refocused view fully contains every target object without truncation.
-
----
-
-## 📈 Results at a Glance
 DeepScan provides strong gains on fine-grained and visually grounded reasoning benchmarks.
 
-- **V\*** (Qwen2.5-VL-7B backbone): **90.6%** overall
-  - **93.0%** Attribute
-  - **86.8%** Spatial
-- **Improvement over vanilla Qwen2.5-VL-7B**:
-  - **+16.3%** on **V\***
-  - **+5.5%** on **TreeBench**
-- **HR-Bench**:
-  - **75.0%** on **HR-4K**
-  - **72.4%** on **HR-8K**
-- **TreeBench**:
-  - **42.5%** overall
-  - **37.3 mIoU**
-- **Scaling**:
-  - **DeepScan-72B** reaches **94.2%** on **V\*** at **k = ∞**
+V* (Qwen2.5-VL-7B backbone): 90.6% overall
+93.0% Attribute
+86.8% Spatial
+Improvement over vanilla Qwen2.5-VL-7B:
++16.3% on V*
++5.5% on TreeBench
+HR-Bench:
+75.0% on HR-4K
+72.4% on HR-8K
+TreeBench:
+42.5% overall
+37.3 mIoU
+Scaling:
+DeepScan-72B reaches 94.2% on V* at k = ∞
 
-DeepScan is also competitive with strong RL-based visually grounded reasoning methods while remaining fully **training-free**.
+DeepScan is also competitive with strong visually grounded reasoning methods while remaining fully training-free.
 
----
+⚡ Efficiency Notes
 
-## ⚡ Efficiency Notes
-DeepScan is designed as a **test-time scaling** framework, so it introduces extra inference cost compared with vanilla one-shot inference. At the same time, it admits an explicit performance–efficiency trade-off through:
+DeepScan is a test-time scaling framework, so it introduces extra inference cost compared with vanilla one-shot inference. At the same time, it admits an explicit performance-efficiency trade-off through:
 
-- the **patch size**,
-- the **number of retained evidence candidates (k)**, and
-- the batched engineering optimizations described in the supplementary material.
+the patch size
+the number of retained evidence candidates (k)
+batched engineering optimizations
 
 In the optimized implementation discussed in the supplementary material, DeepScan benefits substantially from:
 
-- **batched attention-map computation**,
-- **batched top-k evidence judgment**,
-- **batched view justification**, and
-- **vLLM-based serving**.
+batched attention-map computation
+batched top-k evidence judgment
+batched view justification
+vLLM-based serving
 
 These optimizations reduce the sequential overhead of visually grounded search and significantly improve throughput.
 
----
+🙏 Acknowledgements
 
-## 🙏 Acknowledgements
-DeepScan builds on several excellent open-source projects and model ecosystems. We would like to give special thanks first to **[DyFo](https://github.com/PKU-ICST-MIPL/DyFo_CVPR2025)** for its inspiring open-source release. We also acknowledge the following projects and model ecosystems:
+DeepScan builds on several excellent open-source projects and model ecosystems. We would like to give special thanks first to DyFo
+ for its inspiring open-source release. We also acknowledge the following projects and model ecosystems:
 
-- **Qwen2-VL / Qwen2.5-VL**
-- **LAVIS**
-- **LangSAM**
-- **SAM2**
-- **vLLM**
+Qwen2-VL / Qwen2.5-VL / Qwen3-VL
+LAVIS
+LangSAM
+SAM2
+vLLM
 
 We thank the authors and maintainers of these projects for making their work available.
 
----
+📜 Citation
 
-## 📜 Citation
 If you find DeepScan useful, please cite:
 
-```bibtex
 @article{li2026deepscan,
   title={DeepScan: A Training-Free Framework for Visually Grounded Reasoning in Large Vision-Language Models},
   author={Li, Yangfu and Zhan, Hongjian and Chen, Jiawei and Gong, Yuning and Liu, Qi and Lu, Yue},
   journal={arXiv preprint arXiv:2603.03857},
   year={2026}
 }
-```
