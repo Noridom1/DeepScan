@@ -14,6 +14,7 @@
 ---
 
 ## 🔥 News
+- [ ] **TODO.** Batched Inference.
 - [x] **2026-04.** Evaluation scripts are released.
 - [x] **2026-03.** The core codebase is open-sourced.
 - [x] **2026-02.** DeepScan was accepted to **CVPR 2026** main track.
@@ -82,19 +83,7 @@ After creating the `lavis` environment, modify:
 your_env_path/lavis/models/blip_models/blip_image_text_matching.py
 ```
 
-Replace the following line at **Line 76, Line 109, and Line 122**:
-
-```python
-encoder_input_ids[:, 0] = self.tokenizer.enc_token_id
-```
-
-with:
-
-```python
-encoder_input_ids[:, 0] = self.tokenizer.convert_tokens_to_ids("[ENC]")
-```
-
-That is, the patched logic should be:
+Replace the following lines:
 
 ```python
 # encoder_input_ids[:, 0] = self.tokenizer.enc_token_id
@@ -201,12 +190,6 @@ DeepScan/
         └── eval/
             ├── vstar/
             └── ...
-```
-
-In short, the benchmark folders should be placed under:
-
-```text
-playground/data/eval/
 ```
 
 ---
@@ -348,8 +331,8 @@ Example `nvidia-smi` snapshot:
 ```text
 +-----------------------------------------------------------------------------------------+
 | GPU  Name                 Memory-Usage |
-| 0    NVIDIA GeForce RTX 4090   11199MiB / 49140MiB |
-| 1    NVIDIA GeForce RTX 4090   17307MiB / 49140MiB |
+| 0    NVIDIA GeForce RTX 4090   11199MiB / 24576MiB |
+| 1    NVIDIA GeForce RTX 4090   17307MiB / 24576MiB |
 +-----------------------------------------------------------------------------------------+
 ```
 
