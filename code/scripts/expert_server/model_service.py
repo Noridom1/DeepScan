@@ -1,189 +1,187 @@
-#!/usr/bin/env python3
-from __future__ import annotations
-
-import argparse
-import asyncio
-import base64
-import io
-import logging
-import os
-import time
-import datetime
-from contextlib import asynccontextmanager
-from typing import List, Dict, Any
-
-import torch
-import uvicorn
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+from typing import List, Optional
+import uvicorn
+import asyncio
 from PIL import Image
-import gc
-
+import io
+import base64
+import numpy as np
 from lang_sam import LangSAM
-
+import torch, gc
+import time
+from collections import deque
+import argparse
+import logging
+from contextlib import asynccontextmanager
+import os
+import datetime
 
 class ImageRequest(BaseModel):
-    image: str  # base64-encoded RGB image
+    image: str  # base64 encoded image
     text: str   # prompt text
-
 
 class PredictionResponse(BaseModel):
     boxes: List[List[float]]
     labels: List[str]
-    masks: List[List[List[int]]]
-
+    masks: List[List[List[int]]]  # add mask field
 
 class BatchProcessor:
-    """
-    Simple batched inference queue. Requests are accumulated and processed
-    in batches up to `max_batch_size`. Results are delivered via Futures.
-    """
-    def __init__(self, max_batch_size: int = 8, max_queue_size: int = 100) -> None:
+    def __init__(self, max_batch_size: int = 8, max_queue_size: int = 100):
+        # self.model = LangSAM() # Standard model
+
+        # off-line loading
         self.model = LangSAM(
-            sam_type="sam2.1_hiera_small",
-            ckpt_path_sam="replace/with/your/model_path",
-            ckpt_path_gdino="replace/with/your/model_path",
+            sam_type       ="sam2.1_hiera_small",                                        
+            ckpt_path_sam  ="/root/autodl-tmp/sam2.1-hiera-small/sam2.1_hiera_small.pt", # replace with your
+            ckpt_path_gdino="/root/autodl-tmp/grounding-dino-base"                       # HF目录
         )
+
         self.max_batch_size = max_batch_size
-        self.request_queue: asyncio.Queue = asyncio.Queue(maxsize=max_queue_size)
+        self.max_queue_size = max_queue_size
+        self.request_queue = asyncio.Queue(maxsize=max_queue_size)
         self.processing = False
         self.start_time = time.time()
-        self.port = args.port  # set after argparse
+        self.port = args.port
 
-    async def _print_queue_stats(self) -> None:
-        """Periodic service heartbeat and queue metrics."""
+    async def _print_queue_stats(self):
         while True:
-            uptime = time.time() - self.start_time
-            qsize = self.request_queue.qsize()
-            app.state.logger.info("Port=%s | Uptime=%.2fs | Queue=%d", self.port, uptime, qsize)
-            await asyncio.sleep(60)
+            current_time = time.time()
+            elapsed_time = current_time - self.start_time
+            queue_size = self.request_queue.qsize()
+            app.state.logger.info(f"Port: {self.port}, Uptime: {elapsed_time:.2f}s, Current queue size: {queue_size}")
+            await asyncio.sleep(60)  # print every 60 seconds
 
-    async def add_request(self, image: Image.Image, text: str) -> Dict[str, Any]:
-        """Enqueue a request and await its result."""
-        if self.request_queue.full():
-            raise HTTPException(status_code=503, detail="Server queue is full")
-
-        fut: asyncio.Future = asyncio.get_running_loop().create_future()
-        await self.request_queue.put((image, text, fut))
-
+    async def add_request(self, image: Image.Image, text: str):
+        if self.request_queue.qsize() >= self.max_queue_size:
+            raise HTTPException(
+                status_code=503,
+                detail="Server queue is full, please try again later"
+            )
+        
+        future = asyncio.Future()
+        await self.request_queue.put((image, text, future))
+        
         if not self.processing:
             asyncio.create_task(self._process_batch())
-
+        
         try:
-            return await asyncio.wait_for(fut, timeout=3000.0)
-        except asyncio.TimeoutError as e:
-            raise HTTPException(status_code=504, detail="Processing timeout") from e
+            return await asyncio.wait_for(future, timeout=3000.0)
+        except asyncio.TimeoutError:
+            raise HTTPException(
+                status_code=504,
+                detail="Processing timeout"
+            )
 
-    async def _process_batch(self) -> None:
-        """Drain the queue in batches and run model inference."""
+    async def _process_batch(self):
         self.processing = True
-        try:
-            while not self.request_queue.empty():
-                batch_images: List[Image.Image] = []
-                batch_texts: List[str] = []
-                batch_futures: List[asyncio.Future] = []
-
-                # Build a batch (non-blocking); task_done/join are not used.
+        
+        while not self.request_queue.empty():
+            batch_images = []
+            batch_texts = []
+            batch_futures = []
+            
+            # Get all requests in current queue, up to max_batch_size
+            try:
                 while len(batch_images) < self.max_batch_size and not self.request_queue.empty():
-                    try:
-                        image, text, fut = self.request_queue.get_nowait()
-                    except asyncio.QueueEmpty:
-                        break
-                    if not fut.cancelled():
+                    # Modified here to use get_nowait() instead of await get_nowait()
+                    image, text, future = self.request_queue.get_nowait()
+                    if not future.cancelled():
                         batch_images.append(image)
                         batch_texts.append(text)
-                        batch_futures.append(fut)
+                        batch_futures.append(future)
+                    self.request_queue.task_done()
+            except asyncio.QueueEmpty:
+                pass
 
-                if not batch_images:
-                    continue
-
+            if batch_images:  # Only predict if there are requests
                 try:
                     with torch.no_grad():
                         results = self.model.predict(
                             images_pil=batch_images,
                             texts_prompt=batch_texts,
                             box_threshold=0.3,
-                            text_threshold=0.25,
+                            text_threshold=0.25
                         )
-
-                    for fut, res in zip(batch_futures, results):
-                        fut.set_result(
-                            {
-                                "boxes": res["boxes"].tolist() if len(res["boxes"]) else [],
-                                "labels": res["labels"] if len(res["labels"]) else [],
-                                "masks": res["masks"].tolist() if len(res["masks"]) else [],
-                            }
-                        )
-
+                    
+                    for future, result in zip(batch_futures, results):
+                        future.set_result({
+                            "boxes": result["boxes"].tolist() if len(result["boxes"]) else [],
+                            "labels": result["labels"] if len(result["labels"]) else [],
+                            "masks": result["masks"].tolist() if len(result["masks"]) else []  # add mask results
+                        })
+                    
                     del results
                     gc.collect()
-                    app.state.logger.info(
-                        "Batch processed | size=%d | remaining=%d",
-                        len(batch_images),
-                        self.request_queue.qsize(),
-                    )
+                    
+                    # Log current batch processing stats
+                    remaining_samples = self.request_queue.qsize()
+                    app.state.logger.info(f"Batch processed, samples: {len(batch_images)}, remaining: {remaining_samples}")
+                    
                 except Exception as e:
+                    # Create error log directory
                     error_dir = "error_logs"
                     os.makedirs(error_dir, exist_ok=True)
-                    ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-
-                    err_path = os.path.join(error_dir, f"error_{ts}.txt")
-                    with open(err_path, "w", encoding="utf-8") as f:
-                        f.write(f"Error: {str(e)}\n\nTexts:\n")
+                    
+                    # Get current timestamp
+                    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+                    
+                    # Save error info
+                    error_log_path = os.path.join(error_dir, f"error_{timestamp}.txt")
+                    with open(error_log_path, "w", encoding="utf-8") as f:
+                        f.write(f"Error: {str(e)}\n\n")
+                        f.write("Texts:\n")
                         for i, text in enumerate(batch_texts):
                             f.write(f"{i}: {text}\n")
-
+                    
+                    # Save images
                     for i, img in enumerate(batch_images):
-                        img.save(os.path.join(error_dir, f"error_{ts}_img_{i}.jpg"))
+                        img_path = os.path.join(error_dir, f"error_{timestamp}_img_{i}.jpg")
+                        img.save(img_path)
+                    
+                    app.state.logger.error(f"Error processing batch, logs saved to {error_dir}")
+                    
+                    for future in batch_futures:
+                        future.set_exception(e)
 
-                    app.state.logger.error("Batch failed; logs saved to %s", error_dir)
-                    for fut in batch_futures:
-                        if not fut.done():
-                            fut.set_exception(e)
-        finally:
-            self.processing = False
-
+        self.processing = False
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--port", type=int, default=8000, help="Service port")
 parser.add_argument("--max_batch_size", type=int, default=8, help="Max batch size")
 args = parser.parse_args()
 
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # Startup
     app.state.logger = logging.getLogger("uvicorn")
     stats_task = asyncio.create_task(processor._print_queue_stats())
-    try:
-        yield
-    finally:
-        stats_task.cancel()
-
+    yield
+    # Shutdown
+    stats_task.cancel()
 
 app = FastAPI(lifespan=lifespan)
-processor = BatchProcessor(max_batch_size=args.max_batch_size, max_queue_size=10000)
-
+processor = BatchProcessor(
+    max_batch_size=args.max_batch_size,
+    max_queue_size=10000  # set max queue length
+)
 
 @app.post("/predict", response_model=PredictionResponse)
 async def predict(request: ImageRequest):
     try:
-        img_bytes = base64.b64decode(request.image)
-        image = Image.open(io.BytesIO(img_bytes))
-        if image.mode != "RGB":
-            image = image.convert("RGB")
+        # Decode base64 image
+        image_data = base64.b64decode(request.image)
+        image = Image.open(io.BytesIO(image_data))
+        if image.mode != 'RGB':
+            image = image.convert('RGB')
+            
+        # Submit request to batch processor
         result = await processor.add_request(image, request.text)
         return result
+        
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e)) from e
-
+        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
-    uvicorn.run(
-        "model_service:app",
-        host="0.0.0.0",
-        port=args.port,
-        limit_concurrency=10000,
-        backlog=10000,
-        log_level="debug",
-    )
+    # args are executed in the above
+    uvicorn.run("model_service:app", host="0.0.0.0", port=args.port, limit_concurrency=10000, backlog=10000, log_level="debug")
