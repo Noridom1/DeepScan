@@ -19,25 +19,40 @@ class QuestionSample(ABC):
         self.image = row['image']  # base64
         self.options = get_options(row, ['A', 'B', 'C', 'D'])
         self.cur_option_char = ['A', 'B', 'C', 'D'][:len(self.options)]
+        
         self.clients, self.models = get_openai_clients_and_models(self.args.model_path)
         self.current_client_idx = 0
+
         self.category = row['category']
 
+        
+    async def _next_qwen_client(self) -> AsyncOpenAI:
+        async with self._qwen_rr_lock:
+            client = self.qwen_clients[self._qwen_rr_idx]
+            self._qwen_rr_idx = (self._qwen_rr_idx + 1) % len(self.qwen_clients)
+            return client
+        
+    
     async def generate(self, prompt, image, max_tokens=1024):
         client = self.clients[self.current_client_idx]
         model = self.models[self.current_client_idx]
+
         self.current_client_idx = (self.current_client_idx + 1) % len(self.clients)
+
         image_bytes = base64.b64decode(image)
         img = Image.open(io.BytesIO(image_bytes))
+     
         target_size = (self.args.image_size, self.args.image_size)
-
+        
         if img.width > target_size[0] or img.height > target_size[1]:
+           
             ratio = min(target_size[0]/img.width, target_size[1]/img.height)
             new_size = (int(img.width*ratio), int(img.height*ratio))
             img = img.resize(new_size, Image.Resampling.BILINEAR)
             buffered = io.BytesIO()
             img.save(buffered, format="JPEG")
             processed_image = base64.b64encode(buffered.getvalue()).decode()
+            
         else:
             processed_image = image
 
@@ -65,17 +80,21 @@ class QuestionSample(ABC):
         result = chat_completion.choices[0].message.content
         return result
 
+
     async def generate_local(self, prompt, image, max_tokens=1024):
         processed_image = image
         runtime = await get_qwen_runtime(
-            model_name=self.args.model_path,                      
+            model_name=self.args.model_path,
             attn_impl=("flash_attention_2" if getattr(self.args,"use_fa2",False) else None),
             dtype="auto",
+            # min_pixels=256*28*28, max_pixels=1280*28*28,
             max_concurrency=getattr(self.args, "max_concurrency", 1),
         )
+
         temperature = self.args.temperature if self.args.temperature > 0 else 0.0
         return await runtime.generate(prompt, processed_image, max_tokens=max_tokens, temperature=temperature)
 
+    
     async def process(self):
         try:
             return await self._process()

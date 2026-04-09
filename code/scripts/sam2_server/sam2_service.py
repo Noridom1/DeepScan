@@ -17,7 +17,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, conlist
 
 
-SAM2_REPO_ROOT = Path("/root/miniconda3/envs/langsam/lib/python3.11/site-packages/sam2"
+SAM2_REPO_ROOT = Path("/root/miniconda3/envs/langsam/lib/python3.11/site-packages/sam2")
 if SAM2_REPO_ROOT.is_dir():
     os.chdir(SAM2_REPO_ROOT)
     print(f"Working directory changed to: {os.getcwd()}")

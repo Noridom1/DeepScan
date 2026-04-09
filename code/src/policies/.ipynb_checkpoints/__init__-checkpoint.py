@@ -1,27 +1,19 @@
-import os
-import inspect
-from .policy import QuestionSample
+from .vstar import policy_map as vstar_policy_map
+from .vstar_zf import policy_map as vstar_zf_policy_map
+from .pope import policy_map as pope_policy_map
+from .pope_zf import policy_map as pope_zf_policy_map
 
-# Automatically import all Python files in current directory
+
+# Merge four policy_maps
 policy_map = {}
-current_dir = os.path.dirname(os.path.abspath(__file__))
-
-# Get all Python files in current directory
-py_files = [f for f in os.listdir(current_dir) if f.endswith('.py') and not f.startswith('__')]
-
-# Dynamically import all modules
-for file in py_files:
-    module_name = file[:-3]  # Remove .py suffix
-    if module_name != 'policy':  # Skip base class file
-        # Use from syntax for direct import
-        exec(f"from .{module_name} import *")
-
-# Iterate through all members of current module
-for name, obj in list(locals().items()):
-    # Check if it's a subclass of QuestionSample
-    if (inspect.isclass(obj) and 
-        issubclass(obj, QuestionSample) and 
-        obj != QuestionSample):
-        # Convert class name to policy name (remove QuestionSample suffix, lowercase)
-        policy_name = name.replace('QuestionSample', '').lower()
-        policy_map[policy_name] = obj
+for name, cls in vstar_policy_map.items():
+    policy_map[f"vstar.{name}"] = cls
+    
+for name, cls in vstar_zf_policy_map.items():
+    policy_map[f"vstar_zf.{name}"] = cls    
+    
+for name, cls in pope_policy_map.items():
+    policy_map[f"pope.{name}"] = cls
+    
+for name, cls in pope_zf_policy_map.items():
+    policy_map[f"pope_zf.{name}"] = cls

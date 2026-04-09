@@ -171,7 +171,7 @@ def merge_overlapping_masks(
 def iterative_segmentation_from_heatmap(
     initial_points: List[Tuple], 
     image_b64: str, # 确认 get_mask 直接接收这个 base64 字符串
-    sam_endpoint: str = "http://127.0.0.1:8201/sam2/point_predict"
+    sam_endpoint: str = "http://127.0.0.1:8200/sam2/point_predict"
 ) -> List[Dict[str, Any]]:
     """
     通过迭代调用SAM服务和过滤控制点来分割所有物体。
@@ -244,7 +244,7 @@ def grounding(img: str, #base64str
     # base64_str = base64.b64encode(img_bytes).decode('utf-8')
 
     # gen heatmap
-    resized_img, heatmap = get_heatmap(img, question, endpoint = "http://localhost:8101/attention_map", block=BLOCK)
+    resized_img, heatmap = get_heatmap(img, question, endpoint = "http://localhost:8100/attention_map", block=BLOCK)
     # get control points
     points, raw_binary, final_mask = filter_heatmap_and_find_centroids(heatmap)
     # get objects

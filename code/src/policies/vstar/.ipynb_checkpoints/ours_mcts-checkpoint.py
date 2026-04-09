@@ -22,6 +22,12 @@ class OursMCTSQuestionSample(MCTSQuestionSample):
             #     self.image,                # 原始 base64 图
             #     self.clients, self.models  # 复用父类拿到的 client+model
             # )
+            # crop_b64, region_px = await zoom_refine_prefilter(
+            #     self.row['question'],      # 原始问句
+            #     self.image,                # 原始 base64 图
+            #     self.generate_local        # 复用父类拿到的 client+model
+            # )
+        
             # if crop_b64 and region_px:
             #     print("llm定位成功", region_px)
             #     # 要对region_px做变换！外扩到384的整数倍，确保坐标一致！
@@ -78,8 +84,14 @@ class OursMCTSQuestionSample(MCTSQuestionSample):
             # else:
                 # print("定位失败!")
                 # 无法初始定位，直接用grounding计算初始区域
-                resized_img, resized_width, resized_height, objects = grounding(self.image, self.row['question'], BLOCK=768)
-                flag, union_bbox = await self.justify(objects)
+                if self.category == 'relative_position':
+                    resized_img, resized_width, resized_height, objects_1 = grounding(self.image, self.row['question'], BLOCK=768)
+                else:
+                    resized_img, resized_width, resized_height, objects_1 = grounding(self.image, self.row['question'], BLOCK=576)
+
+                    
+                # _, _, _, objects_2 = grounding(self.image, self.row['question'], BLOCK=384)
+                flag, union_bbox = await self.justify(objects_1)
                 if flag:      
                     # 换算坐标
                     bbox_org  = self.convert_bbox_to_original_frame((0, 0, self.image_width, self.image_height), resized_width, resized_height, union_bbox)
@@ -174,6 +186,7 @@ class OursMCTSQuestionSample(MCTSQuestionSample):
 
         
     async def corse_search(self):
+
         # crop_b64, region_px = await zoom_refine_prefilter(
         #         self.row['question'],      # 原始问句
         #         self.image,                # 原始 base64 图
@@ -199,7 +212,11 @@ class OursMCTSQuestionSample(MCTSQuestionSample):
         #         return self_img, crop_img, objects
 
         # else:
-            resized_img, resized_width, resized_height, objects = grounding(self.image, self.row['question'], BLOCK=768)
+            if self.category == 'relative_position':
+                resized_img, resized_width, resized_height, objects = grounding(self.image, self.row['question'], BLOCK=384)
+            else:
+                resized_img, resized_width, resized_height, objects = grounding(self.image, self.row['question'], BLOCK=384)
+
             flag, union_bbox = await self.justify(objects)
             if flag:
                 bbox_org  = self.convert_bbox_to_original_frame((0, 0, self.image_width, self.image_height), resized_width, resized_height, union_bbox)
@@ -212,7 +229,7 @@ class OursMCTSQuestionSample(MCTSQuestionSample):
                 return self_img, self_img, objects
 
     
-    async def justify(self, found_objs, TOP_K=10):
+    async def justify(self, found_objs, TOP_K=None):
         """
          分析TOP_K个候选图像区域，找出所有与问题相关的对象，
          并将它们的边界框（bbox）合并成一个大的联合边界框。
@@ -241,17 +258,31 @@ please firstly determine wether the image contains the clues for answering the q
 then give the evidence of your decision."""
         
         # 2. 遍历所有TOP_K个候选对象，不再提前中断
-        for obj in found_objs:
-            image = obj['crop_img']
-            bbox = obj['bbox']  # bbox格式: (x_min, y_min, x_max, y_max)
+        if TOP_K:
+            for obj in found_objs[: TOP_K]:
+                image = obj['crop_img']
+                bbox = obj['bbox']  # bbox格式: (x_min, y_min, x_max, y_max)
 
-            # 调用LLM进行判断
-            response = await self.generate(prompt, image, max_tokens=50)
-            # print("待检测区域为: ", bbox, "\n", "判断结果为: ", response)
-            # 检查LLM的回答，如果包含'yes'，则收集其bbox
-            if 'yes' in response.lower():
-                confirmed_bboxes.append(bbox)
-            # 如果是'no'，则直接进入下一个循环 (continue)
+                # 调用LLM进行判断
+                response = await self.generate_local(prompt, image, max_tokens=50)
+                # print("待检测区域为: ", bbox, "\n", "判断结果为: ", response)
+                # 检查LLM的回答，如果包含'yes'，则收集其bbox
+                if 'yes' in response.lower():
+                    confirmed_bboxes.append(bbox)
+                # 如果是'no'，则直接进入下一个循环 (continue)
+        else:
+            for obj in found_objs:
+                image = obj['crop_img']
+                bbox = obj['bbox']  # bbox格式: (x_min, y_min, x_max, y_max)
+
+                # 调用LLM进行判断
+                response = await self.generate_local(prompt, image, max_tokens=50)
+                # print("待检测区域为: ", bbox, "\n", "判断结果为: ", response)
+                # 检查LLM的回答，如果包含'yes'，则收集其bbox
+                if 'yes' in response.lower():
+                    confirmed_bboxes.append(bbox)
+                # 如果是'no'，则直接进入下一个循环 (continue)
+            
 
         # 3. 在循环结束后，根据收集到的bbox进行决策
         # 如果列表为空，说明没有找到任何相关的对象
