@@ -4,7 +4,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 import io
 import base64
 import asyncio
-from typing import Optional, Union
+from typing import Optional, Union, List, Sequence
 
 import torch
 from PIL import Image
@@ -22,6 +22,10 @@ def _to_dtype(s: str) -> Union[str, torch.dtype]:
     if s in ("fp32", "float32"):
         return torch.float32
     raise ValueError(f"Unsupported dtype: {s}")
+
+
+ImageInputType = Union[str, Image.Image]
+MultiImageInputType = Union[ImageInputType, Sequence[ImageInputType]]
 
 
 class QwenVLRuntime:
@@ -70,7 +74,7 @@ class QwenVLRuntime:
     async def generate(
         self,
         prompt: str,
-        image_input,
+        image_input: MultiImageInputType,
         max_tokens: int = 1024,
         temperature: float = 0.0,
         top_p: Optional[float] = None,
@@ -93,7 +97,7 @@ class QwenVLRuntime:
                 presence_penalty,
             )
 
-    def _to_pil_image(self, image_input) -> Image.Image:
+    def _to_pil_image(self, image_input: ImageInputType) -> Image.Image:
         if isinstance(image_input, Image.Image):
             return image_input.convert("RGB")
 
@@ -112,7 +116,7 @@ class QwenVLRuntime:
             if "," not in s:
                 raise ValueError("Invalid data URL image input: missing comma separator.")
             s = s.split(",", 1)[1].strip()
-            
+
         s = "".join(s.split())
         pad_len = (-len(s)) % 4
         if pad_len:
@@ -128,10 +132,18 @@ class QwenVLRuntime:
         except Exception as e:
             raise ValueError(f"Decoded bytes are not a valid image: {e}") from e
 
+    def _to_pil_images(self, image_input: MultiImageInputType) -> List[Image.Image]:
+        if isinstance(image_input, (list, tuple)):
+            if len(image_input) == 0:
+                raise ValueError("image_input list is empty.")
+            return [self._to_pil_image(x) for x in image_input]
+
+        return [self._to_pil_image(image_input)]
+
     def _blocking_generate(
         self,
         prompt: str,
-        image_input,
+        image_input: MultiImageInputType,
         max_tokens: int,
         temperature: float,
         top_p: Optional[float],
@@ -139,25 +151,31 @@ class QwenVLRuntime:
         repetition_penalty: Optional[float],
         presence_penalty: Optional[float],
     ) -> str:
-        pil_image = self._to_pil_image(image_input)
+        pil_images = self._to_pil_images(image_input)
 
         full_prompt = prompt
         if self.system_prompt:
             full_prompt = f"{self.system_prompt}\n\n{prompt}"
 
+        content = []
+        for pil_image in pil_images:
+            content.append(
+                {
+                    "type": "image",
+                    "image": pil_image,
+                }
+            )
+        content.append(
+            {
+                "type": "text",
+                "text": full_prompt,
+            }
+        )
+
         messages = [
             {
                 "role": "user",
-                "content": [
-                    {
-                        "type": "image",
-                        "image": pil_image,
-                    },
-                    {
-                        "type": "text",
-                        "text": full_prompt,
-                    },
-                ],
+                "content": content,
             }
         ]
 

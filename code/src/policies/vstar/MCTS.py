@@ -38,9 +38,9 @@ class MCTSQuestionSample(BaseQuestionSample):
         buffered = io.BytesIO()
         blank_image.save(buffered, format="PNG")
         self.blank_image = base64.b64encode(buffered.getvalue()).decode()
-        self.max_depth = 2     
+        self.max_depth = 3     
         self.c_puct = 1.0      
-        self.n_simulations = 4 
+        self.n_simulations = 6 
         self.use_ensemble = True 
         
         self.actions = [
@@ -370,21 +370,20 @@ class MCTSQuestionSample(BaseQuestionSample):
 
         if self.args.single_pred_prompt:
             if self.args.lang == 'cn':
-                final_qs += '\n' + "请直接回答选项字母。"
+                final_qs += '\n' + "仔细查看输入的图像以及放大后的证据（可选），然后直接从给出的选项中选择对应的字母来回答问题。"
             else:
-                final_qs += '\n' + "Answer with the option's letter from the given choices directly."
+                final_qs += '\n' + "Carefully review the input images as well as the zoomed-in evidence (optional), and then answer the question with the option's letter from the given choices directly."
             
         answers = []
         for node in all_nodes:
             answer = await self.generate_local(final_qs, node.state['image'])
-            
             for letter in ['A', 'B', 'C', 'D']:
                 if letter in answer:
                     answers.append((letter, node.leaf_reward))  # Use leaf reward as weight
                     break
             else:
                 answers.append(('A', node.leaf_reward))  # If no valid option found, default to A with leaf reward
-                
+
         best_node = max(all_nodes, key=lambda x: (x.leaf_reward, all_nodes.index(x)))
         
         if self.use_ensemble:

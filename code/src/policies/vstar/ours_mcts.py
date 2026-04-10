@@ -57,15 +57,13 @@ class OursMCTSQuestionSample(MCTSQuestionSample):
             return ax1 >= bx1 and ay1 >= by1 and ax2 <= bx2 and ay2 <= by2
             
         confirmed_bboxes = []
-        prompt = f"""I will provide you an image and a **question** {self.row['question']}, \
-please firstly determine wether the image contains the clues for answering the question or not (answer with **Yes** or **No**); \
-then give the evidence of your decision."""
+        prompt = f"""I will provide you an image and a question: {self.row['question']}. Please first review the provided images and determine whether the provided image contains the clues for answering the question or not. Give the brief reason and evidence of your decision, and then answer with **Yes** or **No."""
         
         if TOP_K:
             for obj in found_objs[: TOP_K]:
                 image = obj['crop_img']
                 bbox = obj['bbox']  
-                response = await self.generate_local(prompt, image, max_tokens=50)
+                response = await self.generate_local(prompt, image, max_tokens=256)
                
                 if 'yes' in response.lower():
                     confirmed_bboxes.append(bbox)
@@ -74,7 +72,7 @@ then give the evidence of your decision."""
                 image = obj['crop_img']
                 bbox = obj['bbox']
 
-                response = await self.generate_local(prompt, image, max_tokens=50)
+                response = await self.generate_local(prompt, image, max_tokens=256)
                 if 'yes' in response.lower():
                     confirmed_bboxes.append(bbox)
 

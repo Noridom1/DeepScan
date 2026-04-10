@@ -41,6 +41,16 @@ Unlike RL-based grounded reasoning approaches, DeepScan is **plug-and-play** and
 
 ---
 
+## 📊 Glance of Results on V*  
+*(detailed in [Issue #3](../../issues/3))*
+
+| Backbone | Overall | Direct Attributes | Relative Position |
+|----------|---------|-------------------|-------------------|
+| Qwen2.5-VL 7B | 90.6 | 92.2 | 88.2 |
+| Qwen3-VL 8B | 92.2 | 93.0 | 90.8 |
+
+---
+
 ## 🚀 Quick Start
 
 DeepScan requires **three conda environments**:

@@ -81,8 +81,8 @@ class QuestionSample(ABC):
         return result
 
 
-    async def generate_local(self, prompt, image, max_tokens=1024):
-        processed_image = image
+    async def generate_local(self, prompt, images, max_tokens=1024):
+        processed_images = images
         runtime = await get_qwen_runtime(
             model_name=self.args.model_path,
             attn_impl=("flash_attention_2" if getattr(self.args,"use_fa2",False) else None),
@@ -92,7 +92,7 @@ class QuestionSample(ABC):
         )
 
         temperature = self.args.temperature if self.args.temperature > 0 else 0.0
-        return await runtime.generate(prompt, processed_image, max_tokens=max_tokens, temperature=temperature)
+        return await runtime.generate(prompt, processed_images, max_tokens=max_tokens, temperature=temperature)
 
     
     async def process(self):
