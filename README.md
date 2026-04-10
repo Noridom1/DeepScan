@@ -11,9 +11,7 @@
     <img src="./figs/teaser.png" alt="DeepScan framework" width="950">
   </a>
 </p>
-<p align="center">
-  <em>Click the figure to open the PDF version.</em>
-</p>
+
 > **TL;DR.** DeepScan is a **training-free** framework for **visually grounded reasoning** in LVLMs. It follows a **bottom-up** pipeline with **Hierarchical Scanning**, **Refocusing**, and **Evidence-Enhanced Reasoning**, enabling stronger grounded reasoning without any additional training.
 
 ---
