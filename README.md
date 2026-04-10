@@ -3,9 +3,6 @@
   <p><em>Official implementation of the CVPR 2026 paper</em></p>
   <p>
     <a href="https://arxiv.org/abs/2603.03857"><img alt="Paper" src="https://img.shields.io/badge/Paper-arXiv%202026-1D4ED8"></a>
-    <a href="https://arxiv.org/abs/2603.03857"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2603.03857-B31B1B"></a>
-    <a href="#"><img alt="Framework" src="https://img.shields.io/badge/Framework-Training--Free-10B981"></a>
-    <a href="#"><img alt="Grounding" src="https://img.shields.io/badge/Grounding-Bottom--Up-111827"></a>
   </p>
 </div>
 
