@@ -2,10 +2,18 @@
   <h1>🔎 DeepScan: A Training-Free Framework for Visually Grounded Reasoning in Large Vision-Language Models</h1>
   <p><em>Official implementation of the CVPR 2026 paper</em></p>
   <p>
-    <a href="https://arxiv.org/abs/2603.03857"><img alt="Paper" src="https://img.shields.io/badge/Paper-arXiv%202026-1D4ED8"></a>
+    <a href="https://arxiv.org/abs/2603.03857"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2603.03857-B31B1B"></a>
   </p>
 </div>
 
+<p align="center">
+  <a href="./figs/teaser.pdf">
+    <img src="./figs/teaser.png" alt="DeepScan framework" width="950">
+  </a>
+</p>
+<p align="center">
+  <em>Click the figure to open the PDF version.</em>
+</p>
 > **TL;DR.** DeepScan is a **training-free** framework for **visually grounded reasoning** in LVLMs. It follows a **bottom-up** pipeline with **Hierarchical Scanning**, **Refocusing**, and **Evidence-Enhanced Reasoning**, enabling stronger grounded reasoning without any additional training.
 
 ---
