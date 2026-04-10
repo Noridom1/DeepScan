@@ -38,9 +38,9 @@ class MCTSQuestionSample(BaseQuestionSample):
         buffered = io.BytesIO()
         blank_image.save(buffered, format="PNG")
         self.blank_image = base64.b64encode(buffered.getvalue()).decode()
-        self.max_depth = 1     
+        self.max_depth = 2     
         self.c_puct = 1.0      
-        self.n_simulations = 3 
+        self.n_simulations = 4 
         self.use_ensemble = True 
         
         self.actions = [
