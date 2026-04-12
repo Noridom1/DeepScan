@@ -17,7 +17,7 @@ class OursMCTSQuestionSample(MCTSQuestionSample):
                 else:
                     resized_img, resized_width, resized_height, objects_1 = grounding(self.image, self.row['question'], BLOCK=640)
 
-                flag, union_bbox = await self.justify(objects_1)、
+                flag, union_bbox = await self.justify(objects_1)
                 self.flag = flag
                 if flag:      
                     bbox_org  = self.convert_bbox_to_original_frame((0, 0, self.image_width, self.image_height), resized_width, resized_height, union_bbox)
