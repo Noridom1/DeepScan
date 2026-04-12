@@ -2,6 +2,7 @@ import base64, io, asyncio
 import numpy as np
 from PIL import Image
 from typing import Tuple
+from pathlib import Path
 from .MCTS import MCTSQuestionSample, MCTSNode
 from .client import get_heatmap
 from .visual_grounding import grounding
@@ -14,7 +15,7 @@ class OursMCTSQuestionSample(MCTSQuestionSample):
                 if self.category == 'relative_position':
                     resized_img, resized_width, resized_height, objects_1 = grounding(self.image, self.row['question'], BLOCK=768)
                 else:
-                    resized_img, resized_width, resized_height, objects_1 = grounding(self.image, self.row['question'], BLOCK=576)
+                    resized_img, resized_width, resized_height, objects_1 = grounding(self.image, self.row['question'], BLOCK=640)
 
                 flag, union_bbox = await self.justify(objects_1)
                 if flag:      
@@ -57,7 +58,11 @@ class OursMCTSQuestionSample(MCTSQuestionSample):
             return ax1 >= bx1 and ay1 >= by1 and ax2 <= bx2 and ay2 <= by2
             
         confirmed_bboxes = []
-        prompt = f"""I will provide you an image and a question: {self.row['question']}. Please first review the provided images and determine whether the provided image contains the clues for answering the question or not. Give the brief reason and evidence of your decision, and then answer with **Yes** or **No."""
+        model_name = Path(self.args.model_path).name
+        if "qwen3-vl" in model_name.lower():
+            prompt = f"""I will provide you an image and a question: {self.row['question']}. Please first review the provided images and determine whether the provided image contains the clues for answering the question or not. Give the brief reason and evidence of your decision, and then answer with **Yes** or **No."""
+        else:
+            prompt = f"""I will provide you an image and a **question** {self.row['question']}, please firstly determine wether the image contains the clues for answering the question or not (answer with **Yes** or **No**); then give the evidence of your decision."""
         
         if TOP_K:
             for obj in found_objs[: TOP_K]:

@@ -1,5 +1,6 @@
 from .policy import QuestionSample as BaseQuestionSample
 from utils import is_none
+from pathlib import Path
 import shortuuid
 import base64
 import io
@@ -375,8 +376,23 @@ class MCTSQuestionSample(BaseQuestionSample):
                 final_qs += '\n' + "Carefully review the input images as well as the zoomed-in evidence (optional), and then answer the question with the option's letter from the given choices directly."
             
         answers = []
+        model_name = Path(self.args.model_path).name
         for node in all_nodes:
-            answer = await self.generate_local(final_qs, node.state['image'])
+            if "qwen3-vl" in model_name.lower():
+                answer = await self.generate_local(final_qs, node.state['image'])
+            else:
+                 # multi-scale evidence enhanced reasoning
+                if self.flag:
+                    if node.state['image'] == self.initial_state['image']:
+                        answer = await self.generate_local(final_qs, [node.state['image'], self.image])
+                    else:
+                        answer = await self.generate_local(final_qs, [node.state['image'], self.initial_state['image'], self.image])     
+                else:
+                    if node.state['image'] == self.image:
+                        answer = await self.generate_local(final_qs, node.state['image'])
+                    else:
+                        answer = await self.generate_local(final_qs, [node.state['image'], self.image])
+                    
             for letter in ['A', 'B', 'C', 'D']:
                 if letter in answer:
                     answers.append((letter, node.leaf_reward))  # Use leaf reward as weight
