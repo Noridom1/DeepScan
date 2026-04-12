@@ -82,7 +82,7 @@ conda activate langsam
 
 #### Main runtime
 ```bash
-conda env create -f dyfo.yml
+conda env create -f deepscan.yml
 conda activate deepscan
 ```
 
