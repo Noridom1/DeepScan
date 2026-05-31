@@ -35,7 +35,7 @@ dependencies:
   - xz=5.6.4
   - zlib=1.2.13
   - pip:
-      - aiofiles==24.1.0
+      - aiofiles==23.2.1
       - annotated-types==0.7.0
       - antlr4-python3-runtime==4.9.3
       - anyio==4.9.0
@@ -50,8 +50,8 @@ dependencies:
       - filelock==3.18.0
       - fonttools==4.58.2
       - fsspec==2025.5.1
-      - gradio==5.29.0
-      - gradio-client==1.10.0
+      - gradio==5.0.2
+      - gradio-client==1.4.0
       - groovy==0.1.2
       - h11==0.16.0
       - hf-xet==1.1.3
@@ -64,10 +64,10 @@ dependencies:
       - iopath==0.1.10
       - jinja2==3.1.6
       - kiwisolver==1.4.8
-      - lang-sam==0.2.1
-      - litserve==0.2.8
+      - lang-sam @ git+https://github.com/luca-medeiros/lang-segment-anything.git@v0.2.1
+      - litserve==0.2.3
       - markdown-it-py==3.0.0
-      - markupsafe==3.0.2
+      - markupsafe==2.1.5
       - matplotlib==3.10.3
       - mdurl==0.1.2
       - mpmath==1.3.0
@@ -90,10 +90,10 @@ dependencies:
       - orjson==3.10.18
       - packaging==25.0
       - pandas==2.3.0
-      - pillow==11.2.1
+      - pillow==10.4.0
       - portalocker==3.1.1
-      - pydantic==2.11.5
-      - pydantic-core==2.33.2
+      - pydantic==2.9.2
+      - pydantic-core==2.23.4
       - pydub==0.25.1
       - pygments==2.19.1
       - pyparsing==3.2.3
@@ -109,7 +109,6 @@ dependencies:
       - ruff==0.11.13
       - safehttpx==0.1.6
       - safetensors==0.5.3
-      - sam-2==1.0
       - scipy==1.15.3
       - semantic-version==2.10.0
       - shellingham==1.5.4
@@ -119,7 +118,7 @@ dependencies:
       - supervision==0.23.0
       - sympy==1.14.0
       - tokenizers==0.19.1
-      - tomlkit==0.13.3
+      - tomlkit==0.12.0
       - torch==2.4.1
       - torchvision==0.19.1
       - tqdm==4.67.1
@@ -133,5 +132,4 @@ dependencies:
       - uvicorn==0.34.3
       - uvloop==0.20.0
       - watchfiles==1.0.5
-      - websockets==15.0.1
-prefix: /root/miniconda3/envs/langsam
+      - websockets==12.0

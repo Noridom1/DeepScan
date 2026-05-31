@@ -84,6 +84,9 @@ conda activate langsam
 ```bash
 conda env create -f deepscan.yml
 conda activate deepscan
+pip install git+https://github.com/openai/CLIP.git
+pip install --no-build-isolation basicsr==1.4.2
+pip install --no-build-isolation git+https://github.com/xinntao/Real-ESRGAN.git
 ```
 
 ---

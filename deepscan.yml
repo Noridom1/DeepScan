@@ -50,7 +50,7 @@ dependencies:
       - certifi==2025.4.26
       - charset-normalizer==3.4.2
       - click==8.2.1
-      - clip==1.0
+      # - git+https://github.com/openai/CLIP.git
       - cloudpickle==3.1.1
       - comm==0.2.2
       - compressed-tensors==0.6.0
@@ -157,7 +157,7 @@ dependencies:
       - ptyprocess==0.7.0
       - pure-eval==0.2.3
       - py-cpuinfo==9.0.0
-      - pyairports==2.1.1
+      - pyairports==0.0.1
       - pyarrow==20.0.0
       - pycocoevalcap==1.2
       - pycocotools==2.0.10
@@ -173,7 +173,8 @@ dependencies:
       - pyzmq==26.4.0
       - qwen-vl-utils==0.0.11
       - ray==2.47.0
-      - real-esrgan==0.2.1
+      # - basicsr==1.4.2
+      # - git+https://github.com/xinntao/Real-ESRGAN.git
       - referencing==0.36.2
       - regex==2024.11.6
       - requests==2.32.3
@@ -211,13 +212,13 @@ dependencies:
       - urllib3==2.4.0
       - uvicorn==0.34.0
       - uvloop==0.21.0
-      - vllm==0.6.3.post1
+      - vllm
       - watchfiles==1.0.5
       - wcwidth==0.2.13
       - webdataset==1.0.2
       - websockets==15.0.1
       - widgetsnbextension==4.0.14
-      - xformers==0.0.27.post2
+      - xformers
       - xxhash==3.5.0
       - yacs==0.1.8
       - yarl==1.20.1
