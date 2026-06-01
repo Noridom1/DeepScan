@@ -140,7 +140,7 @@ Please place the checkpoint from:
 facebook/sam2.1-hiera-base-plus
 ```
 
-into the `checkpoints` directory of the installed `sam2` package inside the `langsam` environment.
+into the `checkpoints` directory of the installed `sam2` package inside the `langsam` environment. If your `langsam` env lives in a different path, update `SAM2_REPO_ROOT` and the default checkpoint path in `code/scripts/sam2_server/sam2_service.py`.
 
 ---
 
@@ -189,6 +189,21 @@ SAM2_REPO_ROOT = Path("/your/envs/langsam/lib/python3.11/site-packages/sam2")
 ```
 
 This should be the absolute path to the installed `sam2` package in your `langsam` environment.
+
+### 4. SAM2 server config + checkpoint defaults
+
+File:
+```text
+code/scripts/sam2_server/sam2_service.py
+```
+
+Defaults:
+```python
+parser.add_argument("--cfg", default="configs/sam2.1/sam2.1_hiera_b+.yaml", ...)
+parser.add_argument("--ckpt", default=str(SAM2_REPO_ROOT / "checkpoints/sam2.1_hiera_base_plus.pt"), ...)
+```
+
+Keep `--cfg` as a **package-relative** path (Hydra will not resolve absolute paths). Update `--ckpt` if you store the checkpoint elsewhere in your environment.
 
 ---
 
@@ -335,6 +350,22 @@ The following generation flags are not valid and may be ignored: ['temperature',
 ```
 
 You may also invoke the main entry point directly through `code/src/run.py`, depending on your local setup.
+
+### Run a single selected sample
+
+Use the TSV dataset in `playground/data/eval/vstar` (it includes a base64 `image` column). Select a sample by its `index` column or by row order:
+
+```bash
+python code/src/run_single_sample.py \
+  --question-file playground/data/eval/vstar/test_questions.tsv \
+  --index 0 \
+  --answers-file /tmp/out.jsonl \
+  --model-path <ckpt> \
+  --method_name vstar.oursmcts \
+  --image-size 1024
+```
+
+To select by row order instead of the `index` column, replace `--index 0` with `--row-idx 0`.
 
 ---
 

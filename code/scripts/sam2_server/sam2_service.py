@@ -17,7 +17,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, conlist
 
 
-SAM2_REPO_ROOT = Path("/root/miniconda3/envs/langsam/lib/python3.11/site-packages/sam2")
+SAM2_REPO_ROOT = Path("/home/phucnlt2/miniconda3/envs/langsam/lib/python3.11/site-packages/sam2")
 if SAM2_REPO_ROOT.is_dir():
     os.chdir(SAM2_REPO_ROOT)
     print(f"Working directory changed to: {os.getcwd()}")
@@ -26,8 +26,16 @@ else:
 
 
 parser = argparse.ArgumentParser(description="SAM‑2 point‑prompt inference server")
-parser.add_argument("--ckpt", default="checkpoints/sam2.1_hiera_base_plus.pt", help="SAM-2 checkpoint")
-parser.add_argument("--cfg", default="configs/sam2.1/sam2.1_hiera_b+.yaml", help="SAM-2 config")
+parser.add_argument(
+    "--ckpt",
+    default=str(SAM2_REPO_ROOT / "checkpoints/sam2.1_hiera_base_plus.pt"),
+    help="SAM-2 checkpoint",
+)
+parser.add_argument(
+    "--cfg",
+    default="configs/sam2.1/sam2.1_hiera_b+.yaml",
+    help="SAM-2 config (relative to sam2 package)",
+)
 parser.add_argument("--port", type=int, default=8000, help="Service port")
 args, _ = parser.parse_known_args()
 

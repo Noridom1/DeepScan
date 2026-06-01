@@ -8,7 +8,7 @@ gpu_list="${CUDA_VISIBLE_DEVICES:-0}"
 IFS=',' read -ra GPULIST <<< "$gpu_list"
 CHUNKS=${#GPULIST[@]}
 
-CKPT="/root/autodl-tmp/Qwen3-VL-8B-Instruct"
+CKPT="/models/Qwen3-VL-8B-Instruct"
 NAME="$(basename "$CKPT")"
 
 DATASET="vstar"

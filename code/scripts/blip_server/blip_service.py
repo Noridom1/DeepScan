@@ -12,7 +12,7 @@ from lavis.models import load_model, load_preprocess, load_model_and_preprocess
 from lavis.models.blip_models.blip_image_text_matching import compute_gradcam
 
 
-LOCAL_TOKENIZER_PATH = "/root/autodl-tmp/bert-base-uncased/" # <--- repalce with your local path
+LOCAL_TOKENIZER_PATH = "/home/phucnlt2/DeepScan/models/bert-base-uncased/" # <--- repalce with your local path
 original_init_tokenizer = BlipBase.init_tokenizer
 @classmethod
 def patched_init_tokenizer(cls):

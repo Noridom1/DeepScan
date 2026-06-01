@@ -1,1 +1,5 @@
 models/
+playground/
+.vscode/
+.github/
+__pycache__/

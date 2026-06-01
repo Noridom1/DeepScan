@@ -28,14 +28,14 @@ class PredictionResponse(BaseModel):
 
 class BatchProcessor:
     def __init__(self, max_batch_size: int = 8, max_queue_size: int = 100):
-        # self.model = LangSAM() # Standard model
+        self.model = LangSAM() # Standard model
 
         # off-line loading
-        self.model = LangSAM(
-            sam_type       ="sam2.1_hiera_small",                                        
-            ckpt_path_sam  ="/root/autodl-tmp/sam2.1-hiera-small/sam2.1_hiera_small.pt", # replace with your
-            ckpt_path_gdino="/root/autodl-tmp/grounding-dino-base"                       # HF目录
-        )
+        # self.model = LangSAM(
+        #     sam_type       ="sam2.1_hiera_small",                                        
+        #     ckpt_path_sam  ="/home/phucnlt2/DeepScan/models/sam2.1-hiera-small/sam2.1_hiera_small.pt", # replace with your
+        #     ckpt_path_gdino="/home/phucnlt2/DeepScan/models/grounding-dino-base"                       # HF目录
+        # )
 
         self.max_batch_size = max_batch_size
         self.max_queue_size = max_queue_size
