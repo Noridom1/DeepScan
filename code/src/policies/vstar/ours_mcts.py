@@ -12,15 +12,27 @@ class OursMCTSQuestionSample(MCTSQuestionSample):
     async def get_final_answer(self, use_mcts=True):
         if not hasattr(self, "_prefilter_done"):
                 self._prefilter_done = True
+                print(
+                    "[trace:ours:grounding] "
+                    f"question_id={self.row.get('index')} category={self.category!r} "
+                    f"question={self.row.get('question')!r}"
+                )
                 if self.category == 'relative_position':
                     resized_img, resized_width, resized_height, objects_1 = grounding(self.image, self.row['question'], BLOCK=768)
                 else:
                     resized_img, resized_width, resized_height, objects_1 = grounding(self.image, self.row['question'], BLOCK=640)
+                print(
+                    "[trace:ours:grounding] "
+                    f"resized={resized_width}x{resized_height} proposals={len(objects_1)} "
+                    f"bboxes={[obj.get('bbox') for obj in objects_1]}"
+                )
 
                 flag, union_bbox = await self.justify(objects_1)
                 self.flag = flag
+                print(f"[trace:ours:justify] flag={flag} union_bbox={union_bbox}")
                 if flag:      
                     bbox_org  = self.convert_bbox_to_original_frame((0, 0, self.image_width, self.image_height), resized_width, resized_height, union_bbox)
+                    print(f"[trace:ours:justify] original_frame_bbox={bbox_org}")
                     img_bytes = base64.b64decode(self.image)
                     groud_img = Image.open(io.BytesIO(img_bytes)).crop(bbox_org)
                     buffered = io.BytesIO()
@@ -48,6 +60,11 @@ class OursMCTSQuestionSample(MCTSQuestionSample):
                         'image_height': self.image_height,
                         'region_coords': (0, 0, self.image_width, self.image_height)
                     }
+                print(
+                    "[trace:ours:initial_state] "
+                    f"region={self.initial_state['region_coords']} "
+                    f"depth={self.initial_state['depth']}"
+                )
 
         return await super().get_final_answer()
   
@@ -66,26 +83,36 @@ class OursMCTSQuestionSample(MCTSQuestionSample):
             prompt = f"""I will provide you an image and a **question** {self.row['question']}, please firstly determine wether the image contains the clues for answering the question or not (answer with **Yes** or **No**); then give the evidence of your decision."""
         
         if TOP_K:
-            for obj in found_objs[: TOP_K]:
+            for idx, obj in enumerate(found_objs[: TOP_K]):
                 image = obj['crop_img']
                 bbox = obj['bbox']  
                 response = await self.generate_local(prompt, image, max_tokens=256)
+                print(
+                    "[trace:ours:justify] "
+                    f"proposal={idx} bbox={bbox} response={response.replace(chr(10), ' ')[:300]!r}"
+                )
                
                 if 'yes' in response.lower():
                     confirmed_bboxes.append(bbox)
         else:
-            for obj in found_objs:
+            for idx, obj in enumerate(found_objs):
                 image = obj['crop_img']
                 bbox = obj['bbox']
 
                 response = await self.generate_local(prompt, image, max_tokens=256)
+                print(
+                    "[trace:ours:justify] "
+                    f"proposal={idx} bbox={bbox} response={response.replace(chr(10), ' ')[:300]!r}"
+                )
                 if 'yes' in response.lower():
                     confirmed_bboxes.append(bbox)
 
         if not confirmed_bboxes:
+            print("[trace:ours:justify] confirmed_bboxes=[]")
             return False, None
 
         if len(confirmed_bboxes) == 1:
+            print(f"[trace:ours:justify] confirmed_bboxes={confirmed_bboxes}")
             return True, confirmed_bboxes[0]
         
         bboxes_array = np.array(confirmed_bboxes)
@@ -95,6 +122,7 @@ class OursMCTSQuestionSample(MCTSQuestionSample):
         y_max = np.max(bboxes_array[:, 3])
         
         union_bbox = (x_min, y_min, x_max, y_max)
+        print(f"[trace:ours:justify] confirmed_bboxes={confirmed_bboxes} union={union_bbox}")
         return True, union_bbox
 
 

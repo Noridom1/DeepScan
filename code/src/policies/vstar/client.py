@@ -6,7 +6,7 @@ from typing import List, Tuple
 
 def get_heatmap(raw_image: str, 
                 question: str,
-                endpoint: str = "http://localhost:8100/attention_map",
+                endpoint: str = "http://localhost:8102/attention_map",
                 block: int = 786):
    
     payload = {
@@ -35,7 +35,7 @@ def get_heatmap(raw_image: str,
 def get_mask_point(
     image_b64: str,
     positive_point: Tuple[int, int],
-    endpoint: str = "http://127.0.0.1:8200/sam2/point_predict"
+    endpoint: str = "http://127.0.0.1:8202/sam2/point_predict"
 ) -> np.ndarray:
 
     payload = {

@@ -13,6 +13,14 @@ import traceback
 import re
 
 
+def _short_trace_text(value, limit=300):
+    text = "" if value is None else str(value)
+    text = text.replace("\n", "\\n")
+    if len(text) > limit:
+        return text[:limit] + "..."
+    return text
+
+
 class MCTSNode:
     def __init__(self, state, parent=None, available_actions=None):
         self.state = state  
@@ -60,9 +68,14 @@ class MCTSQuestionSample(BaseQuestionSample):
         }
         
         self.root = None
-        self.expert_ports = [0]
+        self.expert_ports = [2] # <----- Changed the port
         self.expert_ports = [port + 8000 for port in self.expert_ports]
         self.expert_base_url = "http://localhost:{}/predict"
+        print(
+            "[trace:mcts:init] "
+            f"question_id={self.row.get('index')} image_size={self.image_width}x{self.image_height} "
+            f"expert_ports={self.expert_ports}"
+        )
 
     
     async def extract_key_objects(self):
@@ -75,6 +88,7 @@ class MCTSQuestionSample(BaseQuestionSample):
     
             prompt = f"Task: List objects mentioned in text in List format.\nInput text: {question}\nAction: What objects are mentioned in original text? List separated by commas. For example, from \"person with white trousers on the left or right side of the person in blue\", output \"[\"person with white trousers\", \"person in blue\"]\"."
             response = await self.generate_local(prompt, self.blank_image, max_tokens=50)
+            print(f"[trace:mcts:key_objects] raw_response={_short_trace_text(response)!r}")
             
             try:
                 objects = eval(response)
@@ -96,11 +110,13 @@ class MCTSQuestionSample(BaseQuestionSample):
         else:
             prompt = f"Task: Extract all objects (including people) with their complete descriptions from the question. For example, from 'Is the person with white trousers on the left or right side of the person in blue?', extract 'person with white trousers' and 'person in blue'.\nQuestion: {self.row['question']}\nAction: Only list the objects separated by commas."
             response = await self.generate_local(prompt, self.blank_image, max_tokens=50)
+            print(f"[trace:mcts:key_objects] raw_response={_short_trace_text(response)!r}")
             
             if "object" in response.lower() or "description" in response.lower():
                 objects = response.split()[-1].lower()
 
             objects = [obj.strip() for obj in response.split(',')]
+            print(f"[trace:mcts:key_objects] parsed={objects}")
             return objects
 
             
@@ -119,7 +135,13 @@ class MCTSQuestionSample(BaseQuestionSample):
                     }
                 ) as response:
                     if response.status == 200:
-                        return await response.json()
+                        result = await response.json()
+                        print(
+                            "[trace:mcts:visual_expert] "
+                            f"url={expert_url} text={_short_trace_text(text, 120)!r} "
+                            f"boxes={len(result.get('boxes', []))}"
+                        )
+                        return result
                     else:
                         error_text = await response.text()
                         print(f"Visual expert API returned error status: {response.status}")
@@ -190,11 +212,20 @@ class MCTSQuestionSample(BaseQuestionSample):
             buffered = io.BytesIO()
             cropped_img.save(buffered, format="PNG")
             cropped_image_base64 = base64.b64encode(buffered.getvalue()).decode()
+            print(
+                "[trace:mcts:action] repeat_question "
+                f"boxes={len(expert_result.get('boxes', []))} "
+                f"region={new_region_coords} valid_area_ratio={valid_area_ratio:.4f}"
+            )
                     
         else:
             cropped_image_base64 = node.state['image']
             valid_area_ratio = node.valid_area_ratio
             new_region_coords = node.state['region_coords']
+            print(
+                "[trace:mcts:action] repeat_question no_boxes "
+                f"region={new_region_coords} valid_area_ratio={valid_area_ratio:.4f}"
+            )
         
         new_state = {
             'depth': node.state['depth'] + 1,
@@ -280,6 +311,12 @@ class MCTSQuestionSample(BaseQuestionSample):
         new_area = (final_x2 - final_x1) * (final_y2 - final_y1)
         total_area = node.state['image_width'] * node.state['image_height']
         child.valid_area_ratio = new_area / total_area
+        print(
+            "[trace:mcts:action] zoom_out "
+            f"region={(final_x1, final_y1, final_x2, final_y2)} "
+            f"valid_area_ratio={child.valid_area_ratio:.4f} "
+            f"boxes={len(expert_result.get('boxes', [])) if expert_result else 0}"
+        )
         
         return child
 
@@ -304,6 +341,10 @@ class MCTSQuestionSample(BaseQuestionSample):
         for obj in key_objects:
             prompt = f"Task: Only answer yes or no.\nQuestion: Is there a {obj} in this image?"
             response = await self.generate_local(prompt, node.state['image'], max_tokens=10)
+            print(
+                "[trace:mcts:simulation] "
+                f"depth={node.state['depth']} obj={obj!r} response={_short_trace_text(response, 80)!r}"
+            )
             
             if 'yes' in response.lower():
                 confirmed_objects.append(obj)
@@ -318,6 +359,11 @@ class MCTSQuestionSample(BaseQuestionSample):
             reward = 1 - node.valid_area_ratio
         else:
             reward = 0
+        print(
+            "[trace:mcts:simulation] "
+            f"depth={node.state['depth']} confirmed={confirmed_objects} "
+            f"missing={missing_objects} reward={reward:.4f}"
+        )
             
         return reward
 
@@ -351,7 +397,8 @@ class MCTSQuestionSample(BaseQuestionSample):
     
     async def get_final_answer(self):
         """Run MCTS to search for best answer"""
-        for _ in range(self.n_simulations):
+        for sim_idx in range(self.n_simulations):
+            print(f"[trace:mcts:search] simulation {sim_idx + 1}/{self.n_simulations}")
             await self.single_run(self.initial_state)
             
         all_nodes = []
@@ -377,7 +424,11 @@ class MCTSQuestionSample(BaseQuestionSample):
             
         answers = []
         model_name = Path(self.args.model_path).name
-        for node in all_nodes:
+        print(
+            "[trace:mcts:answer] "
+            f"nodes={len(all_nodes)} model_name={model_name!r} flag={getattr(self, 'flag', None)}"
+        )
+        for node_idx, node in enumerate(all_nodes):
             if "qwen3-vl" in model_name.lower():
                 answer = await self.generate_local(final_qs, node.state['image'])
             else:
@@ -392,6 +443,11 @@ class MCTSQuestionSample(BaseQuestionSample):
                         answer = await self.generate_local(final_qs, node.state['image'])
                     else:
                         answer = await self.generate_local(final_qs, [node.state['image'], self.image])
+            print(
+                "[trace:mcts:answer] "
+                f"node={node_idx} depth={node.state['depth']} reward={node.leaf_reward:.4f} "
+                f"region={node.state.get('region_coords')} raw={_short_trace_text(answer)!r}"
+            )
                     
             for letter in ['A', 'B', 'C', 'D']:
                 if letter in answer:
@@ -407,9 +463,11 @@ class MCTSQuestionSample(BaseQuestionSample):
             vote_result = defaultdict(float)
             for answer, weight in answers:
                 vote_result[answer] += weight
+            print(f"[trace:mcts:vote] weighted_votes={dict(vote_result)} answers={answers}")
                 
             if all(weight == 0 for weight in vote_result.values()):
                 answer = await self.generate_local(final_qs, self.image)
+                print(f"[trace:mcts:vote] fallback_raw={_short_trace_text(answer)!r}")
                 for letter in ['A', 'B', 'C', 'D']:
                     if letter in answer:
                         final_answer = letter
@@ -420,6 +478,11 @@ class MCTSQuestionSample(BaseQuestionSample):
                 final_answer = max(vote_result, key=vote_result.get)
         else:
             final_answer = max(answers, key=lambda x: x[1])[0]
+        print(
+            "[trace:mcts:final] "
+            f"final_answer={final_answer!r} best_reward={best_node.leaf_reward:.4f} "
+            f"best_region={best_node.state.get('region_coords')}"
+        )
         
         return final_answer, final_qs, answers[-1][0], best_node.state['image'], best_node, self.root
 
@@ -442,8 +505,14 @@ class MCTSQuestionSample(BaseQuestionSample):
         
     async def _process(self):
         self.key_objects = await self.extract_key_objects()
+        print(f"[trace:mcts:process] key_objects={self.key_objects}")
 
         final_answer, prompt, full_answer, final_image, best_node, root_node = await self.get_final_answer()
+        print(
+            "[trace:mcts:process] "
+            f"final_answer={final_answer!r} full_answer={full_answer!r} "
+            f"gold={self.row['answer']!r}"
+        )
          
         # Serialize tree structure for saving
         # tree_info = self.serialize_tree(best_node)

@@ -115,7 +115,7 @@ def merge_overlapping_masks(
 def iterative_segmentation_from_heatmap(
     initial_points: List[Tuple], 
     image_b64: str, 
-    sam_endpoint: str = "http://127.0.0.1:8200/sam2/point_predict"
+    sam_endpoint: str = "http://127.0.0.1:8202/sam2/point_predict"
 ) -> List[Dict[str, Any]]:
    
     found_objects = []
@@ -158,7 +158,13 @@ def grounding(img: str,
               question: str,
               BLOCK: int):
 
-    resized_img, heatmap = get_heatmap(img, question, endpoint = "http://localhost:8100/attention_map", block=BLOCK)
+    # resized_img, heatmap = get_heatmap(img, question, endpoint = "http://localhost:8100/attention_map", block=BLOCK)
+    resized_img, heatmap = get_heatmap(
+        img,
+        question,
+        endpoint="http://localhost:8102/attention_map",
+        block=BLOCK,
+    )
     points, raw_binary, final_mask = filter_heatmap_and_find_centroids(heatmap)
     found_objects = iterative_segmentation_from_heatmap(points, resized_img)
     

@@ -3,3 +3,5 @@ playground/
 .vscode/
 .github/
 __pycache__/
+tmp/
+eval/

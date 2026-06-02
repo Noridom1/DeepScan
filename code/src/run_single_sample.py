@@ -43,8 +43,14 @@ def _ensure_image_base64(row: dict) -> None:
 
 async def run_single_sample(args: argparse.Namespace) -> None:
     questions = pd.read_table(os.path.expanduser(args.question_file))
+    print(f"[trace:single] loaded {len(questions)} rows from {args.question_file}")
     row = _select_row(questions, args)
     _ensure_image_base64(row)
+    print(
+        "[trace:single] selected "
+        f"index={row.get('index')} category={row.get('category')} "
+        f"question={row.get('question')!r}"
+    )
 
     if args.method_name not in policy_map:
         raise ValueError(f"Unknown method_name: {args.method_name}")
@@ -57,8 +63,14 @@ async def run_single_sample(args: argparse.Namespace) -> None:
     QuestionSample = policy_map[args.method_name]
     results = []
     for round_idx in range(num_rounds):
+        print(f"[trace:single] processing round_idx={round_idx} method={args.method_name}")
         sample = QuestionSample(row, args, round_idx)
         result = await sample.process()
+        print(
+            "[trace:single] result "
+            f"question_id={result.get('question_id')} text={result.get('text')!r} "
+            f"answer={result.get('answer')!r}"
+        )
         results.append(result)
 
     answers_file = os.path.expanduser(args.answers_file)
@@ -69,6 +81,7 @@ async def run_single_sample(args: argparse.Namespace) -> None:
     with open(answers_file, "w") as f:
         for result in results:
             f.write(json.dumps(result) + "\n")
+    print(f"[trace:single] wrote {len(results)} result(s) to {answers_file}")
 
 
 if __name__ == "__main__":
