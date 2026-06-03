@@ -8,7 +8,7 @@ gpu_list="${CUDA_VISIBLE_DEVICES:-0}"
 IFS=',' read -ra GPULIST <<< "$gpu_list"
 CHUNKS=${#GPULIST[@]}
 
-CKPT="/models/Qwen3-VL-8B-Instruct"
+CKPT="/home/phucnlt2/DeepScan/models/Qwen3-VL-8B-Instruct"
 NAME="$(basename "$CKPT")"
 
 DATASET="vstar"
@@ -17,7 +17,7 @@ SPLIT="test_questions"
 
 REPO_DIR="$(pwd)"
 OUT_DIR="$REPO_DIR/eval/$DATASET/deepscan/$NAME/$SPLIT/$METHOD"
-QUESTION_FILE="/root/autodl-tmp/playground/data/eval/$DATASET/$SPLIT.tsv"
+QUESTION_FILE="/home/phucnlt2/DeepScan/playground/data/eval/$DATASET/$SPLIT.tsv"
 
 mkdir -p "$OUT_DIR"
 
@@ -48,5 +48,5 @@ done
 
 # Eval
 echo "$METHOD $DATASET $SPLIT"
-python "/root/autodl-tmp/playground/data/eval/$DATASET/eval.py" \
+python "/home/phucnlt2/DeepScan/playground/data/eval/$DATASET/eval.py" \
     --path "$output_file"

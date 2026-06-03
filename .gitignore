@@ -5,3 +5,5 @@ playground/
 __pycache__/
 tmp/
 eval/
+
+__*__/
