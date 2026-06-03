@@ -1,0 +1,357 @@
+{
+  "nodes": [
+    {
+      "id": "config:.claude/settings.local.json",
+      "type": "config",
+      "name": "Claude Code Settings",
+      "filePath": ".claude/settings.local.json",
+      "summary": "Local Claude Code settings configuration specifying permissions for shell commands, npm/pnpm tools, and Python scripts used in the understand-anything analysis pipeline.",
+      "tags": ["configuration", "claude-code", "permissions", "bash", "npm", "python"],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:LICENSE.txt",
+      "type": "document",
+      "name": "Apache License 2.0",
+      "filePath": "LICENSE.txt",
+      "summary": "Apache License 2.0 governing the use, reproduction, and distribution of the DeepScan project.",
+      "tags": ["legal", "license", "apache"],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:README.md",
+      "type": "document",
+      "name": "DeepScan Project Overview",
+      "filePath": "README.md",
+      "summary": "Main project documentation covering the training-free framework for visually grounded reasoning in Large Vision-Language Models (CVPR 2026), including quick start, setup, component overview, and launch instructions for three specialized services.",
+      "tags": ["overview", "quick-start", "installation", "lvlm", "vision-language", "cvpr2026", "blip", "langsam", "sam2", "qwen"],
+      "complexity": "complex"
+    },
+    {
+      "id": "script:code/scripts/blip_server/start_server.sh",
+      "type": "script",
+      "name": "BLIP Search Expert Server Launcher",
+      "filePath": "code/scripts/blip_server/start_server.sh",
+      "summary": "Bash script that launches the BLIP search expert service for patch-wise Grad-CAM attention map computation, with GPU-aware port allocation (8100 + GPU_ID).",
+      "tags": ["service", "blip", "search-expert", "attention-maps", "uvicorn", "fastapi", "gpu-aware"],
+      "complexity": "simple"
+    },
+    {
+      "id": "script:code/scripts/expert_server/start_server.sh",
+      "type": "script",
+      "name": "Visual Expert Server Launcher",
+      "filePath": "code/scripts/expert_server/start_server.sh",
+      "summary": "Bash script that launches the visual expert service (LangSAM/GroundingDINO) for text-conditioned object detection and segmentation, with GPU-aware port allocation (8000 + GPU_ID).",
+      "tags": ["service", "langsam", "grounding-dino", "visual-expert", "detection", "segmentation", "uvicorn", "fastapi", "gpu-aware"],
+      "complexity": "simple"
+    },
+    {
+      "id": "script:code/scripts/sam2_server/start_server.sh",
+      "type": "script",
+      "name": "SAM2 Segmentation Server Launcher",
+      "filePath": "code/scripts/sam2_server/start_server.sh",
+      "summary": "Bash script that launches the SAM2 point-prompt segmentation service for converting heatmap centroids into binary masks, with GPU-aware port allocation (8200 + GPU_ID).",
+      "tags": ["service", "sam2", "segmentation", "point-prompt", "masks", "uvicorn", "fastapi", "gpu-aware"],
+      "complexity": "simple"
+    },
+    {
+      "id": "script:code/scripts/vstar/stream_vstar_qwen.sh",
+      "type": "script",
+      "name": "V* Experiment Batch Runner",
+      "filePath": "code/scripts/vstar/stream_vstar_qwen.sh",
+      "summary": "Main entry point shell script for batch evaluation on V* dataset, supporting multi-GPU data parallelism through chunking, merging results, and invoking dataset evaluation.",
+      "tags": ["experiment", "evaluation", "batch-processing", "data-parallel", "multi-gpu", "vstar", "qwen"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "config:deepscan.yml",
+      "type": "config",
+      "name": "DeepScan Conda Environment",
+      "filePath": "deepscan.yml",
+      "summary": "Conda environment specification for the main DeepScan runtime (Python 3.10), including Qwen-VL model, vLLM, FastAPI, and comprehensive ML/vision libraries for inference and evaluation.",
+      "tags": ["environment", "conda", "python3.10", "qwen-vl", "vllm", "fastapi", "torch", "transformers", "inference"],
+      "complexity": "complex"
+    },
+    {
+      "id": "document:docs/DeepScan-Paper.pdf",
+      "type": "document",
+      "name": "DeepScan Paper",
+      "filePath": "docs/DeepScan-Paper.pdf",
+      "summary": "The CVPR 2026 conference paper presenting the DeepScan framework (arXiv:2603.03857) describing the training-free approach for visually grounded reasoning.",
+      "tags": ["paper", "cvpr2026", "research", "arxiv"],
+      "complexity": "complex"
+    },
+    {
+      "id": "document:docs/architecture.md",
+      "type": "document",
+      "name": "System Architecture and Method Mapping",
+      "filePath": "docs/architecture.md",
+      "summary": "Detailed documentation mapping paper concepts to implementation files, service architecture (BLIP, LangSAM, SAM2), method flow pipeline, and multi-GPU configuration for different setups.",
+      "tags": ["architecture", "system-design", "services", "method-implementation", "configuration-guide", "gpu-setup", "debugging"],
+      "complexity": "complex"
+    },
+    {
+      "id": "document:docs/experiment_flow.md",
+      "type": "document",
+      "name": "Experiment and Batch Processing Flow",
+      "filePath": "docs/experiment_flow.md",
+      "summary": "Documentation explaining the batch experiment runner workflow, dataset sharding, policy dispatch mechanism, async sample processing, and result generation for V* evaluation.",
+      "tags": ["experiment", "batch-processing", "workflow", "dataset", "sharding", "policy", "async", "evaluation"],
+      "complexity": "complex"
+    },
+    {
+      "id": "data:figs/model.pdf",
+      "type": "data",
+      "name": "Model Architecture Figure",
+      "filePath": "figs/model.pdf",
+      "summary": "Visual diagram of the DeepScan model architecture illustrating the three-stage pipeline.",
+      "tags": ["figure", "architecture", "visual"],
+      "complexity": "simple"
+    },
+    {
+      "id": "data:figs/sample.pdf",
+      "type": "data",
+      "name": "Sample Evaluation Results Figure",
+      "filePath": "figs/sample.pdf",
+      "summary": "Visual figure demonstrating sample evaluation results and method performance.",
+      "tags": ["figure", "results", "evaluation"],
+      "complexity": "simple"
+    },
+    {
+      "id": "data:figs/teaser.pdf",
+      "type": "data",
+      "name": "Teaser Figure",
+      "filePath": "figs/teaser.pdf",
+      "summary": "Main teaser figure showing the DeepScan framework overview and key contributions.",
+      "tags": ["figure", "teaser", "overview"],
+      "complexity": "simple"
+    },
+    {
+      "id": "data:figs/teaser.png",
+      "type": "data",
+      "name": "Teaser Image",
+      "filePath": "figs/teaser.png",
+      "summary": "PNG version of the main teaser figure for the DeepScan framework.",
+      "tags": ["image", "teaser", "overview"],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:langsam.yml",
+      "type": "config",
+      "name": "LangSAM Conda Environment",
+      "filePath": "langsam.yml",
+      "summary": "Conda environment specification for visual expert and SAM2 services (Python 3.11), including LangSAM, SAM2, GroundingDINO, torch, transformers, and detection libraries.",
+      "tags": ["environment", "conda", "python3.11", "langsam", "sam2", "grounding-dino", "torch", "transformers", "detection"],
+      "complexity": "complex"
+    },
+    {
+      "id": "config:lavis.yml",
+      "type": "config",
+      "name": "LAVIS Conda Environment",
+      "filePath": "lavis.yml",
+      "summary": "Conda environment specification for the search expert BLIP service (Python 3.10), including salesforce-lavis, torch, transformers, and image processing libraries.",
+      "tags": ["environment", "conda", "python3.10", "lavis", "blip", "torch", "transformers", "attention-maps"],
+      "complexity": "complex"
+    }
+  ],
+  "edges": [
+    {
+      "source": "document:README.md",
+      "target": "document:docs/architecture.md",
+      "type": "documents",
+      "weight": 0.9
+    },
+    {
+      "source": "document:README.md",
+      "target": "document:docs/experiment_flow.md",
+      "type": "documents",
+      "weight": 0.8
+    },
+    {
+      "source": "document:README.md",
+      "target": "document:docs/DeepScan-Paper.pdf",
+      "type": "documents",
+      "weight": 0.7
+    },
+    {
+      "source": "document:README.md",
+      "target": "data:figs/teaser.png",
+      "type": "documents",
+      "weight": 0.8
+    },
+    {
+      "source": "document:README.md",
+      "target": "data:figs/teaser.pdf",
+      "type": "documents",
+      "weight": 0.7
+    },
+    {
+      "source": "document:README.md",
+      "target": "config:deepscan.yml",
+      "type": "documents",
+      "weight": 0.9
+    },
+    {
+      "source": "document:README.md",
+      "target": "config:langsam.yml",
+      "type": "documents",
+      "weight": 0.9
+    },
+    {
+      "source": "document:README.md",
+      "target": "config:lavis.yml",
+      "type": "documents",
+      "weight": 0.9
+    },
+    {
+      "source": "document:README.md",
+      "target": "script:code/scripts/blip_server/start_server.sh",
+      "type": "documents",
+      "weight": 0.8
+    },
+    {
+      "source": "document:README.md",
+      "target": "script:code/scripts/expert_server/start_server.sh",
+      "type": "documents",
+      "weight": 0.8
+    },
+    {
+      "source": "document:README.md",
+      "target": "script:code/scripts/sam2_server/start_server.sh",
+      "type": "documents",
+      "weight": 0.8
+    },
+    {
+      "source": "document:README.md",
+      "target": "script:code/scripts/vstar/stream_vstar_qwen.sh",
+      "type": "documents",
+      "weight": 0.9
+    },
+    {
+      "source": "document:docs/architecture.md",
+      "target": "document:docs/experiment_flow.md",
+      "type": "related",
+      "weight": 0.85
+    },
+    {
+      "source": "document:docs/architecture.md",
+      "target": "document:docs/DeepScan-Paper.pdf",
+      "type": "documents",
+      "weight": 0.7
+    },
+    {
+      "source": "document:docs/architecture.md",
+      "target": "data:figs/model.pdf",
+      "type": "documents",
+      "weight": 0.6
+    },
+    {
+      "source": "document:docs/experiment_flow.md",
+      "target": "document:docs/DeepScan-Paper.pdf",
+      "type": "related",
+      "weight": 0.6
+    },
+    {
+      "source": "config:deepscan.yml",
+      "target": "script:code/scripts/vstar/stream_vstar_qwen.sh",
+      "type": "configures",
+      "weight": 0.85
+    },
+    {
+      "source": "config:langsam.yml",
+      "target": "script:code/scripts/expert_server/start_server.sh",
+      "type": "configures",
+      "weight": 0.9
+    },
+    {
+      "source": "config:langsam.yml",
+      "target": "script:code/scripts/sam2_server/start_server.sh",
+      "type": "configures",
+      "weight": 0.9
+    },
+    {
+      "source": "config:lavis.yml",
+      "target": "script:code/scripts/blip_server/start_server.sh",
+      "type": "configures",
+      "weight": 0.9
+    },
+    {
+      "source": "script:code/scripts/blip_server/start_server.sh",
+      "target": "config:lavis.yml",
+      "type": "related",
+      "weight": 0.8
+    },
+    {
+      "source": "script:code/scripts/expert_server/start_server.sh",
+      "target": "config:langsam.yml",
+      "type": "related",
+      "weight": 0.8
+    },
+    {
+      "source": "script:code/scripts/sam2_server/start_server.sh",
+      "target": "config:langsam.yml",
+      "type": "related",
+      "weight": 0.8
+    },
+    {
+      "source": "script:code/scripts/vstar/stream_vstar_qwen.sh",
+      "target": "script:code/scripts/blip_server/start_server.sh",
+      "type": "related",
+      "weight": 0.7
+    },
+    {
+      "source": "script:code/scripts/vstar/stream_vstar_qwen.sh",
+      "target": "script:code/scripts/expert_server/start_server.sh",
+      "type": "related",
+      "weight": 0.7
+    },
+    {
+      "source": "script:code/scripts/vstar/stream_vstar_qwen.sh",
+      "target": "script:code/scripts/sam2_server/start_server.sh",
+      "type": "related",
+      "weight": 0.7
+    },
+    {
+      "source": "document:docs/architecture.md",
+      "target": "script:code/scripts/blip_server/start_server.sh",
+      "type": "documents",
+      "weight": 0.8
+    },
+    {
+      "source": "document:docs/architecture.md",
+      "target": "script:code/scripts/expert_server/start_server.sh",
+      "type": "documents",
+      "weight": 0.8
+    },
+    {
+      "source": "document:docs/architecture.md",
+      "target": "script:code/scripts/sam2_server/start_server.sh",
+      "type": "documents",
+      "weight": 0.8
+    },
+    {
+      "source": "document:docs/experiment_flow.md",
+      "target": "script:code/scripts/vstar/stream_vstar_qwen.sh",
+      "type": "documents",
+      "weight": 0.85
+    },
+    {
+      "source": "document:LICENSE.txt",
+      "target": "document:README.md",
+      "type": "related",
+      "weight": 0.5
+    },
+    {
+      "source": "config:.claude/settings.local.json",
+      "target": "document:README.md",
+      "type": "related",
+      "weight": 0.3
+    },
+    {
+      "source": "data:figs/sample.pdf",
+      "target": "document:docs/experiment_flow.md",
+      "type": "documents",
+      "weight": 0.6
+    }
+  ]
+}

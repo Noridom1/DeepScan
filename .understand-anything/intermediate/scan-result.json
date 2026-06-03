@@ -1,0 +1,400 @@
+{
+    "projectName":  "DeepScan",
+    "projectDescription":  "Training-free framework for visually grounded reasoning in Large Vision-Language Models (CVPR 2026)",
+    "languages":  [
+                      "bash",
+                      "image",
+                      "json",
+                      "markdown",
+                      "pdf",
+                      "python",
+                      "text",
+                      "yaml"
+                  ],
+    "frameworks":  [
+                       "AIOLimiter",
+                       "AsyncIO",
+                       "FastAPI",
+                       "Hugging Face Transformers",
+                       "LangSAM",
+                       "LAVIS",
+                       "NumPy",
+                       "OpenAI SDK",
+                       "OpenCV",
+                       "Pandas",
+                       "Pillow",
+                       "Pydantic",
+                       "PyTorch",
+                       "Qwen",
+                       "SAM2",
+                       "Uvicorn"
+                   ],
+    "files":  [
+                  {
+                      "path":  ".claude\\settings.local.json",
+                      "language":  "json",
+                      "sizeLines":  21,
+                      "fileCategory":  "config"
+                  },
+                  {
+                      "path":  "code\\scripts\\blip_server\\blip_service.py",
+                      "language":  "python",
+                      "sizeLines":  208,
+                      "fileCategory":  "code"
+                  },
+                  {
+                      "path":  "code\\scripts\\blip_server\\start_server.sh",
+                      "language":  "bash",
+                      "sizeLines":  18,
+                      "fileCategory":  "script"
+                  },
+                  {
+                      "path":  "code\\scripts\\expert_server\\model_service.py",
+                      "language":  "python",
+                      "sizeLines":  172,
+                      "fileCategory":  "code"
+                  },
+                  {
+                      "path":  "code\\scripts\\expert_server\\start_server.sh",
+                      "language":  "bash",
+                      "sizeLines":  18,
+                      "fileCategory":  "script"
+                  },
+                  {
+                      "path":  "code\\scripts\\sam2_server\\sam2_service.py",
+                      "language":  "python",
+                      "sizeLines":  143,
+                      "fileCategory":  "code"
+                  },
+                  {
+                      "path":  "code\\scripts\\sam2_server\\start_server.sh",
+                      "language":  "bash",
+                      "sizeLines":  18,
+                      "fileCategory":  "script"
+                  },
+                  {
+                      "path":  "code\\scripts\\vstar\\stream_vstar_qwen.sh",
+                      "language":  "bash",
+                      "sizeLines":  40,
+                      "fileCategory":  "script"
+                  },
+                  {
+                      "path":  "code\\src\\policies\\__init__.py",
+                      "language":  "python",
+                      "sizeLines":  16,
+                      "fileCategory":  "code"
+                  },
+                  {
+                      "path":  "code\\src\\policies\\vstar\\__init__.py",
+                      "language":  "python",
+                      "sizeLines":  23,
+                      "fileCategory":  "code"
+                  },
+                  {
+                      "path":  "code\\src\\policies\\vstar\\client.py",
+                      "language":  "python",
+                      "sizeLines":  60,
+                      "fileCategory":  "code"
+                  },
+                  {
+                      "path":  "code\\src\\policies\\vstar\\control_point_sam.py",
+                      "language":  "python",
+                      "sizeLines":  204,
+                      "fileCategory":  "code"
+                  },
+                  {
+                      "path":  "code\\src\\policies\\vstar\\MCTS.py",
+                      "language":  "python",
+                      "sizeLines":  499,
+                      "fileCategory":  "code"
+                  },
+                  {
+                      "path":  "code\\src\\policies\\vstar\\ours_mcts.py",
+                      "language":  "python",
+                      "sizeLines":  148,
+                      "fileCategory":  "code"
+                  },
+                  {
+                      "path":  "code\\src\\policies\\vstar\\policy.py",
+                      "language":  "python",
+                      "sizeLines":  108,
+                      "fileCategory":  "code"
+                  },
+                  {
+                      "path":  "code\\src\\policies\\vstar\\visual_grounding.py",
+                      "language":  "python",
+                      "sizeLines":  161,
+                      "fileCategory":  "code"
+                  },
+                  {
+                      "path":  "code\\src\\qwen_runtime.py",
+                      "language":  "python",
+                      "sizeLines":  218,
+                      "fileCategory":  "code"
+                  },
+                  {
+                      "path":  "code\\src\\run.py",
+                      "language":  "python",
+                      "sizeLines":  91,
+                      "fileCategory":  "code"
+                  },
+                  {
+                      "path":  "code\\src\\run_single_sample.py",
+                      "language":  "python",
+                      "sizeLines":  107,
+                      "fileCategory":  "code"
+                  },
+                  {
+                      "path":  "code\\src\\utils.py",
+                      "language":  "python",
+                      "sizeLines":  58,
+                      "fileCategory":  "code"
+                  },
+                  {
+                      "path":  "deepscan.yml",
+                      "language":  "yaml",
+                      "sizeLines":  228,
+                      "fileCategory":  "config"
+                  },
+                  {
+                      "path":  "docs\\architecture.md",
+                      "language":  "markdown",
+                      "sizeLines":  309,
+                      "fileCategory":  "docs"
+                  },
+                  {
+                      "path":  "docs\\DeepScan-Paper.pdf",
+                      "language":  "pdf",
+                      "sizeLines":  0,
+                      "fileCategory":  "docs"
+                  },
+                  {
+                      "path":  "docs\\experiment_flow.md",
+                      "language":  "markdown",
+                      "sizeLines":  284,
+                      "fileCategory":  "docs"
+                  },
+                  {
+                      "path":  "figs\\model.pdf",
+                      "language":  "pdf",
+                      "sizeLines":  0,
+                      "fileCategory":  "docs"
+                  },
+                  {
+                      "path":  "figs\\sample.pdf",
+                      "language":  "pdf",
+                      "sizeLines":  0,
+                      "fileCategory":  "docs"
+                  },
+                  {
+                      "path":  "figs\\teaser.pdf",
+                      "language":  "pdf",
+                      "sizeLines":  0,
+                      "fileCategory":  "docs"
+                  },
+                  {
+                      "path":  "figs\\teaser.png",
+                      "language":  "image",
+                      "sizeLines":  0,
+                      "fileCategory":  "data"
+                  },
+                  {
+                      "path":  "figs\\vstar.pdf",
+                      "language":  "pdf",
+                      "sizeLines":  0,
+                      "fileCategory":  "docs"
+                  },
+                  {
+                      "path":  "langsam.yml",
+                      "language":  "yaml",
+                      "sizeLines":  135,
+                      "fileCategory":  "config"
+                  },
+                  {
+                      "path":  "lavis.yml",
+                      "language":  "yaml",
+                      "sizeLines":  196,
+                      "fileCategory":  "config"
+                  },
+                  {
+                      "path":  "LICENSE.txt",
+                      "language":  "text",
+                      "sizeLines":  0,
+                      "fileCategory":  "docs"
+                  },
+                  {
+                      "path":  "README.md",
+                      "language":  "markdown",
+                      "sizeLines":  311,
+                      "fileCategory":  "docs"
+                  }
+              ],
+    "complexity":  "complex",
+    "filteredByIgnore":  0,
+    "importMap":  {
+                      "code\\scripts\\blip_server\\blip_service.py":  [
+                                                                          "torch",
+                                                                          "transformers",
+                                                                          "lavis.models.blip_models.blip",
+                                                                          "io",
+                                                                          "numpy",
+                                                                          "PIL",
+                                                                          "torchvision",
+                                                                          "lavis.common.gradcam",
+                                                                          "fastapi",
+                                                                          "pydantic",
+                                                                          "lavis.models",
+                                                                          "lavis.models.blip_models.blip_image_text_matching"
+                                                                      ],
+                      "code\\scripts\\expert_server\\model_service.py":  [
+                                                                             "fastapi",
+                                                                             "pydantic",
+                                                                             "typing",
+                                                                             "uvicorn",
+                                                                             "asyncio",
+                                                                             "PIL",
+                                                                             "io",
+                                                                             "base64",
+                                                                             "numpy",
+                                                                             "lang_sam",
+                                                                             "torch",
+                                                                             "time",
+                                                                             "collections",
+                                                                             "argparse",
+                                                                             "logging",
+                                                                             "contextlib",
+                                                                             "os",
+                                                                             "datetime"
+                                                                         ],
+                      "code\\src\\policies\\vstar\\MCTS.py":  [
+                                                                  ".policy",
+                                                                  "utils",
+                                                                  "pathlib",
+                                                                  "shortuuid",
+                                                                  "base64",
+                                                                  "io",
+                                                                  "PIL",
+                                                                  "numpy",
+                                                                  "random",
+                                                                  "math",
+                                                                  "aiohttp",
+                                                                  "traceback",
+                                                                  "re",
+                                                                  "collections"
+                                                              ],
+                      "code\\scripts\\sam2_server\\sam2_service.py":  [
+                                                                          "__future__",
+                                                                          "argparse",
+                                                                          "asyncio",
+                                                                          "base64",
+                                                                          "logging",
+                                                                          "contextlib",
+                                                                          "pathlib",
+                                                                          "typing",
+                                                                          "os",
+                                                                          "cv2",
+                                                                          "numpy",
+                                                                          "torch",
+                                                                          "uvicorn",
+                                                                          "fastapi",
+                                                                          "pydantic",
+                                                                          "sam2.build_sam",
+                                                                          "sam2.sam2_image_predictor"
+                                                                      ],
+                      "code\\src\\run_single_sample.py":  [
+                                                              "argparse",
+                                                              "asyncio",
+                                                              "json",
+                                                              "os",
+                                                              "pandas",
+                                                              "utils",
+                                                              "policies",
+                                                              "debugpy"
+                                                          ],
+                      "code\\src\\qwen_runtime.py":  [
+                                                         "os",
+                                                         "io",
+                                                         "base64",
+                                                         "asyncio",
+                                                         "typing",
+                                                         "torch",
+                                                         "PIL",
+                                                         "transformers"
+                                                     ],
+                      "code\\src\\run.py":  [
+                                                "argparse",
+                                                "os",
+                                                "json",
+                                                "pandas",
+                                                "tqdm",
+                                                "asyncio",
+                                                "random",
+                                                "utils",
+                                                "policies",
+                                                "debugpy"
+                                            ],
+                      "code\\src\\policies\\vstar\\__init__.py":  [
+                                                                      "os",
+                                                                      "inspect",
+                                                                      ".policy"
+                                                                  ],
+                      "code\\src\\policies\\vstar\\policy.py":  [
+                                                                    "abc",
+                                                                    "utils",
+                                                                    "qwen_runtime",
+                                                                    "shortuuid",
+                                                                    "base64",
+                                                                    "io",
+                                                                    "asyncio",
+                                                                    "PIL",
+                                                                    "openai",
+                                                                    "aiolimiter",
+                                                                    "traceback"
+                                                                ],
+                      "code\\src\\policies\\vstar\\control_point_sam.py":  [
+                                                                               "cv2",
+                                                                               "numpy",
+                                                                               "PIL",
+                                                                               "matplotlib.pyplot",
+                                                                               "typing",
+                                                                               "sklearn.cluster"
+                                                                           ],
+                      "code\\src\\utils.py":  [
+                                                  "os",
+                                                  "base64",
+                                                  "io",
+                                                  "math",
+                                                  "torch",
+                                                  "PIL",
+                                                  "openai"
+                                              ],
+                      "code\\src\\policies\\vstar\\ours_mcts.py":  [
+                                                                       "base64",
+                                                                       "numpy",
+                                                                       "PIL",
+                                                                       "typing",
+                                                                       "pathlib",
+                                                                       ".MCTS",
+                                                                       ".client",
+                                                                       ".visual_grounding"
+                                                                   ],
+                      "code\\src\\policies\\vstar\\visual_grounding.py":  [
+                                                                              "base64",
+                                                                              "numpy",
+                                                                              "matplotlib.pyplot",
+                                                                              "PIL",
+                                                                              "typing",
+                                                                              ".client",
+                                                                              ".control_point_sam"
+                                                                          ],
+                      "code\\src\\policies\\vstar\\client.py":  [
+                                                                    "base64",
+                                                                    "numpy",
+                                                                    "PIL",
+                                                                    "typing"
+                                                                ],
+                      "code\\src\\policies\\__init__.py":  [
+                                                               ".vstar"
+                                                           ]
+                  }
+}

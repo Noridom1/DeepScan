@@ -1,0 +1,2691 @@
+{
+  "version": "1.0.0",
+  "project": {
+    "name": "DeepScan",
+    "languages": ["python", "bash", "yaml", "json", "markdown"],
+    "frameworks": ["PyTorch", "Transformers", "LAVIS", "LangSAM", "SAM2", "Qwen", "FastAPI", "AsyncIO"],
+    "description": "Training-free framework for visually grounded reasoning in Large Vision-Language Models (CVPR 2026)",
+    "analyzedAt": "2026-06-03T09:58:03.2090614+07:00",
+    "gitCommitHash": "43ddfe5af7a29c83ce8c16752d29966778e0ca35"
+  },
+  "nodes": [
+    {
+        "id":  "config:.claude/settings.local.json",
+        "type":  "config",
+        "name":  "Claude Code Settings",
+        "filePath":  ".claude/settings.local.json",
+        "summary":  "Local Claude Code settings configuration specifying permissions for shell commands, npm/pnpm tools, and Python scripts used in the understand-anything analysis pipeline.",
+        "tags":  [
+                     "configuration",
+                     "claude-code",
+                     "permissions",
+                     "bash",
+                     "npm",
+                     "python"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "document:LICENSE.txt",
+        "type":  "document",
+        "name":  "Apache License 2.0",
+        "filePath":  "LICENSE.txt",
+        "summary":  "Apache License 2.0 governing the use, reproduction, and distribution of the DeepScan project.",
+        "tags":  [
+                     "legal",
+                     "license",
+                     "apache"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "document:README.md",
+        "type":  "document",
+        "name":  "DeepScan Project Overview",
+        "filePath":  "README.md",
+        "summary":  "Main project documentation covering the training-free framework for visually grounded reasoning in Large Vision-Language Models (CVPR 2026), including quick start, setup, component overview, and launch instructions for three specialized services.",
+        "tags":  [
+                     "overview",
+                     "quick-start",
+                     "installation",
+                     "lvlm",
+                     "vision-language",
+                     "cvpr2026",
+                     "blip",
+                     "langsam",
+                     "sam2",
+                     "qwen"
+                 ],
+        "complexity":  "complex"
+    },
+    {
+        "id":  "file:script:code/scripts/blip_server/start_server.sh",
+        "type":  "script",
+        "name":  "BLIP Search Expert Server Launcher",
+        "filePath":  "code/scripts/blip_server/start_server.sh",
+        "summary":  "Bash script that launches the BLIP search expert service for patch-wise Grad-CAM attention map computation, with GPU-aware port allocation (8100 + GPU_ID).",
+        "tags":  [
+                     "service",
+                     "blip",
+                     "search-expert",
+                     "attention-maps",
+                     "uvicorn",
+                     "fastapi",
+                     "gpu-aware"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "file:script:code/scripts/expert_server/start_server.sh",
+        "type":  "script",
+        "name":  "Visual Expert Server Launcher",
+        "filePath":  "code/scripts/expert_server/start_server.sh",
+        "summary":  "Bash script that launches the visual expert service (LangSAM/GroundingDINO) for text-conditioned object detection and segmentation, with GPU-aware port allocation (8000 + GPU_ID).",
+        "tags":  [
+                     "service",
+                     "langsam",
+                     "grounding-dino",
+                     "visual-expert",
+                     "detection",
+                     "segmentation",
+                     "uvicorn",
+                     "fastapi",
+                     "gpu-aware"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "file:script:code/scripts/sam2_server/start_server.sh",
+        "type":  "script",
+        "name":  "SAM2 Segmentation Server Launcher",
+        "filePath":  "code/scripts/sam2_server/start_server.sh",
+        "summary":  "Bash script that launches the SAM2 point-prompt segmentation service for converting heatmap centroids into binary masks, with GPU-aware port allocation (8200 + GPU_ID).",
+        "tags":  [
+                     "service",
+                     "sam2",
+                     "segmentation",
+                     "point-prompt",
+                     "masks",
+                     "uvicorn",
+                     "fastapi",
+                     "gpu-aware"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "file:script:code/scripts/vstar/stream_vstar_qwen.sh",
+        "type":  "script",
+        "name":  "V* Experiment Batch Runner",
+        "filePath":  "code/scripts/vstar/stream_vstar_qwen.sh",
+        "summary":  "Main entry point shell script for batch evaluation on V* dataset, supporting multi-GPU data parallelism through chunking, merging results, and invoking dataset evaluation.",
+        "tags":  [
+                     "experiment",
+                     "evaluation",
+                     "batch-processing",
+                     "data-parallel",
+                     "multi-gpu",
+                     "vstar",
+                     "qwen"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "config:deepscan.yml",
+        "type":  "config",
+        "name":  "DeepScan Conda Environment",
+        "filePath":  "deepscan.yml",
+        "summary":  "Conda environment specification for the main DeepScan runtime (Python 3.10), including Qwen-VL model, vLLM, FastAPI, and comprehensive ML/vision libraries for inference and evaluation.",
+        "tags":  [
+                     "environment",
+                     "conda",
+                     "python3.10",
+                     "qwen-vl",
+                     "vllm",
+                     "fastapi",
+                     "torch",
+                     "transformers",
+                     "inference"
+                 ],
+        "complexity":  "complex"
+    },
+    {
+        "id":  "document:docs/DeepScan-Paper.pdf",
+        "type":  "document",
+        "name":  "DeepScan Paper",
+        "filePath":  "docs/DeepScan-Paper.pdf",
+        "summary":  "The CVPR 2026 conference paper presenting the DeepScan framework (arXiv:2603.03857) describing the training-free approach for visually grounded reasoning.",
+        "tags":  [
+                     "paper",
+                     "cvpr2026",
+                     "research",
+                     "arxiv"
+                 ],
+        "complexity":  "complex"
+    },
+    {
+        "id":  "document:docs/architecture.md",
+        "type":  "document",
+        "name":  "System Architecture and Method Mapping",
+        "filePath":  "docs/architecture.md",
+        "summary":  "Detailed documentation mapping paper concepts to implementation files, service architecture (BLIP, LangSAM, SAM2), method flow pipeline, and multi-GPU configuration for different setups.",
+        "tags":  [
+                     "architecture",
+                     "system-design",
+                     "services",
+                     "method-implementation",
+                     "configuration-guide",
+                     "gpu-setup",
+                     "debugging"
+                 ],
+        "complexity":  "complex"
+    },
+    {
+        "id":  "document:docs/experiment_flow.md",
+        "type":  "document",
+        "name":  "Experiment and Batch Processing Flow",
+        "filePath":  "docs/experiment_flow.md",
+        "summary":  "Documentation explaining the batch experiment runner workflow, dataset sharding, policy dispatch mechanism, async sample processing, and result generation for V* evaluation.",
+        "tags":  [
+                     "experiment",
+                     "batch-processing",
+                     "workflow",
+                     "dataset",
+                     "sharding",
+                     "policy",
+                     "async",
+                     "evaluation"
+                 ],
+        "complexity":  "complex"
+    },
+    {
+        "id":  "file:data:figs/model.pdf",
+        "type":  "data",
+        "name":  "Model Architecture Figure",
+        "filePath":  "figs/model.pdf",
+        "summary":  "Visual diagram of the DeepScan model architecture illustrating the three-stage pipeline.",
+        "tags":  [
+                     "figure",
+                     "architecture",
+                     "visual"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "file:data:figs/sample.pdf",
+        "type":  "data",
+        "name":  "Sample Evaluation Results Figure",
+        "filePath":  "figs/sample.pdf",
+        "summary":  "Visual figure demonstrating sample evaluation results and method performance.",
+        "tags":  [
+                     "figure",
+                     "results",
+                     "evaluation"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "file:data:figs/teaser.pdf",
+        "type":  "data",
+        "name":  "Teaser Figure",
+        "filePath":  "figs/teaser.pdf",
+        "summary":  "Main teaser figure showing the DeepScan framework overview and key contributions.",
+        "tags":  [
+                     "figure",
+                     "teaser",
+                     "overview"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "file:data:figs/teaser.png",
+        "type":  "data",
+        "name":  "Teaser Image",
+        "filePath":  "figs/teaser.png",
+        "summary":  "PNG version of the main teaser figure for the DeepScan framework.",
+        "tags":  [
+                     "image",
+                     "teaser",
+                     "overview"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "config:langsam.yml",
+        "type":  "config",
+        "name":  "LangSAM Conda Environment",
+        "filePath":  "langsam.yml",
+        "summary":  "Conda environment specification for visual expert and SAM2 services (Python 3.11), including LangSAM, SAM2, GroundingDINO, torch, transformers, and detection libraries.",
+        "tags":  [
+                     "environment",
+                     "conda",
+                     "python3.11",
+                     "langsam",
+                     "sam2",
+                     "grounding-dino",
+                     "torch",
+                     "transformers",
+                     "detection"
+                 ],
+        "complexity":  "complex"
+    },
+    {
+        "id":  "config:lavis.yml",
+        "type":  "config",
+        "name":  "LAVIS Conda Environment",
+        "filePath":  "lavis.yml",
+        "summary":  "Conda environment specification for the search expert BLIP service (Python 3.10), including salesforce-lavis, torch, transformers, and image processing libraries.",
+        "tags":  [
+                     "environment",
+                     "conda",
+                     "python3.10",
+                     "lavis",
+                     "blip",
+                     "torch",
+                     "transformers",
+                     "attention-maps"
+                 ],
+        "complexity":  "complex"
+    },
+    {
+        "id":  "file:code/scripts/blip_server/blip_service.py",
+        "type":  "file",
+        "name":  "blip_service.py",
+        "filePath":  "code/scripts/blip_server/blip_service.py",
+        "summary":  "FastAPI service for BLIP image-text matching model that computes attention maps and filters masks based on text-image similarity. Provides endpoints for generating heatmaps and filtering semantically relevant object masks.",
+        "tags":  [
+                     "server",
+                     "attention",
+                     "vision",
+                     "fastapi",
+                     "lavis",
+                     "inference",
+                     "endpoint"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "class:code/scripts/blip_server/blip_service.py:AttentionRequest",
+        "type":  "class",
+        "name":  "AttentionRequest",
+        "filePath":  "code/scripts/blip_server/blip_service.py",
+        "summary":  "Pydantic request model for attention map computation endpoint containing base64 image, question text, and block size.",
+        "tags":  [
+                     "dataclass",
+                     "request-model"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "function:code/scripts/blip_server/blip_service.py:resize_to_multiple",
+        "type":  "function",
+        "name":  "resize_to_multiple",
+        "filePath":  "code/scripts/blip_server/blip_service.py",
+        "summary":  "Utility function to resize images to multiples of a given block size using BICUBIC interpolation.",
+        "tags":  [
+                     "utility",
+                     "image-processing"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "function:code/scripts/blip_server/blip_service.py:genAttnMap",
+        "type":  "function",
+        "name":  "genAttnMap",
+        "filePath":  "code/scripts/blip_server/blip_service.py",
+        "summary":  "Generates attention heatmaps using BLIP model\u0027s gradCAM, computing cross-modal alignment between image patches and text queries.",
+        "tags":  [
+                     "inference",
+                     "attention",
+                     "gradcam"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "function:code/scripts/blip_server/blip_service.py:compute_attention",
+        "type":  "function",
+        "name":  "compute_attention",
+        "filePath":  "code/scripts/blip_server/blip_service.py",
+        "summary":  "Computes attention map for a single full-resolution image and question query pair.",
+        "tags":  [
+                     "inference"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "function:code/scripts/blip_server/blip_service.py:compute_full_attention",
+        "type":  "function",
+        "name":  "compute_full_attention",
+        "filePath":  "code/scripts/blip_server/blip_service.py",
+        "summary":  "Computes attention maps by sliding window approach over large images, combining patch-level heatmaps into full-resolution attention map.",
+        "tags":  [
+                     "inference"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "function:code/scripts/blip_server/blip_service.py:filter_masks_api",
+        "type":  "function",
+        "name":  "filter_masks_api",
+        "filePath":  "code/scripts/blip_server/blip_service.py",
+        "summary":  "Filters object masks by merging semantically similar masks and removing those unrelated to the question using BLIP embeddings.",
+        "tags":  [
+                     "inference",
+                     "semantic-filtering"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "function:code/scripts/blip_server/blip_service.py:attention_map",
+        "type":  "function",
+        "name":  "attention_map",
+        "filePath":  "code/scripts/blip_server/blip_service.py",
+        "summary":  "FastAPI endpoint handler for /attention_map POST requests that returns resized image and heatmap data in base64-encoded format.",
+        "tags":  [
+                     "endpoint",
+                     "async"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "file:code/scripts/expert_server/model_service.py",
+        "type":  "file",
+        "name":  "model_service.py",
+        "filePath":  "code/scripts/expert_server/model_service.py",
+        "summary":  "FastAPI service implementing LangSAM model for object detection and segmentation with batch processing, queue management, and error logging.",
+        "tags":  [
+                     "server",
+                     "detection",
+                     "segmentation",
+                     "fastapi",
+                     "langsam",
+                     "batch-processing",
+                     "async"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "class:code/scripts/expert_server/model_service.py:ImageRequest",
+        "type":  "class",
+        "name":  "ImageRequest",
+        "filePath":  "code/scripts/expert_server/model_service.py",
+        "summary":  "Pydantic request model for /predict endpoint containing base64-encoded image and text prompt.",
+        "tags":  [
+                     "dataclass",
+                     "request-model"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "class:code/scripts/expert_server/model_service.py:PredictionResponse",
+        "type":  "class",
+        "name":  "PredictionResponse",
+        "filePath":  "code/scripts/expert_server/model_service.py",
+        "summary":  "Pydantic response model containing detected bounding boxes, labels, and segmentation masks.",
+        "tags":  [
+                     "dataclass",
+                     "response-model"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "class:code/scripts/expert_server/model_service.py:BatchProcessor",
+        "type":  "class",
+        "name":  "BatchProcessor",
+        "filePath":  "code/scripts/expert_server/model_service.py",
+        "summary":  "Manages request queue and batch processing of images through LangSAM model with configurable batch sizes and queue limits.",
+        "tags":  [
+                     "service",
+                     "batch-processing",
+                     "async"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "function:code/scripts/expert_server/model_service.py:predict",
+        "type":  "function",
+        "name":  "predict",
+        "filePath":  "code/scripts/expert_server/model_service.py",
+        "summary":  "FastAPI endpoint handler for /predict POST requests that decodes base64 images and submits them to batch processor.",
+        "tags":  [
+                     "endpoint",
+                     "async"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "file:code/scripts/sam2_server/sam2_service.py",
+        "type":  "file",
+        "name":  "sam2_service.py",
+        "filePath":  "code/scripts/sam2_server/sam2_service.py",
+        "summary":  "FastAPI service providing SAM-2 segmentation model with point-based prompting interface using load-once, thread-safe predictor pattern.",
+        "tags":  [
+                     "server",
+                     "segmentation",
+                     "fastapi",
+                     "sam2",
+                     "inference"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "class:code/scripts/sam2_server/sam2_service.py:PointPromptReq",
+        "type":  "class",
+        "name":  "PointPromptReq",
+        "filePath":  "code/scripts/sam2_server/sam2_service.py",
+        "summary":  "Pydantic request model for SAM-2 point prompt predictions with positive/negative points and multimask flag.",
+        "tags":  [
+                     "dataclass",
+                     "request-model"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "class:code/scripts/sam2_server/sam2_service.py:PointPromptResp",
+        "type":  "class",
+        "name":  "PointPromptResp",
+        "filePath":  "code/scripts/sam2_server/sam2_service.py",
+        "summary":  "Pydantic response model containing binary segmentation mask and IoU scores from SAM-2.",
+        "tags":  [
+                     "dataclass",
+                     "response-model"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "class:code/scripts/sam2_server/sam2_service.py:_Sam2Engine",
+        "type":  "class",
+        "name":  "_Sam2Engine",
+        "filePath":  "code/scripts/sam2_server/sam2_service.py",
+        "summary":  "Load-once, thread-safe SAM-2 model predictor with point coordinate and label handling.",
+        "tags":  [
+                     "service",
+                     "inference"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "function:code/scripts/sam2_server/sam2_service.py:_b64_to_rgb_ndarray",
+        "type":  "function",
+        "name":  "_b64_to_rgb_ndarray",
+        "filePath":  "code/scripts/sam2_server/sam2_service.py",
+        "summary":  "Utility to decode base64 image strings to RGB numpy arrays using OpenCV.",
+        "tags":  [
+                     "utility",
+                     "image-processing"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "function:code/scripts/sam2_server/sam2_service.py:_ndarray_to_b64_dict",
+        "type":  "function",
+        "name":  "_ndarray_to_b64_dict",
+        "filePath":  "code/scripts/sam2_server/sam2_service.py",
+        "summary":  "Utility to encode numpy arrays as base64 with metadata (shape, dtype).",
+        "tags":  [
+                     "utility",
+                     "serialization"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "function:code/scripts/sam2_server/sam2_service.py:point_predict",
+        "type":  "function",
+        "name":  "point_predict",
+        "filePath":  "code/scripts/sam2_server/sam2_service.py",
+        "summary":  "FastAPI endpoint handler for /sam2/point_predict POST requests with executor-based async inference.",
+        "tags":  [
+                     "endpoint",
+                     "async"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "file:code/src/policies/__init__.py",
+        "type":  "file",
+        "name":  "__init__.py",
+        "filePath":  "code/src/policies/__init__.py",
+        "summary":  "Policy registry that merges policy_map from vstar module and other submodules for dynamic policy loading.",
+        "tags":  [
+                     "registry",
+                     "policy"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "file:code/src/policies/vstar/__init__.py",
+        "type":  "file",
+        "name":  "__init__.py",
+        "filePath":  "code/src/policies/vstar/__init__.py",
+        "summary":  "Dynamic policy loader that auto-discovers and registers all QuestionSample subclasses from current module as policies.",
+        "tags":  [
+                     "registry",
+                     "policy",
+                     "dynamic-import"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "file:code/src/policies/vstar/client.py",
+        "type":  "file",
+        "name":  "client.py",
+        "filePath":  "code/src/policies/vstar/client.py",
+        "summary":  "HTTP client utility functions to fetch attention heatmaps from BLIP service and segmentation masks from SAM-2 service.",
+        "tags":  [
+                     "client",
+                     "http-client",
+                     "utility"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "function:code/src/policies/vstar/client.py:get_heatmap",
+        "type":  "function",
+        "name":  "get_heatmap",
+        "filePath":  "code/src/policies/vstar/client.py",
+        "summary":  "Requests and decodes attention heatmap from remote BLIP service endpoint.",
+        "tags":  [
+                     "client",
+                     "http"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "function:code/src/policies/vstar/client.py:get_mask_point",
+        "type":  "function",
+        "name":  "get_mask_point",
+        "filePath":  "code/src/policies/vstar/client.py",
+        "summary":  "Requests and decodes segmentation mask from SAM-2 service with morphological dilation post-processing.",
+        "tags":  [
+                     "client",
+                     "http"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "file:code/src/policies/vstar/control_point_sam.py",
+        "type":  "file",
+        "name":  "control_point_sam.py",
+        "filePath":  "code/src/policies/vstar/control_point_sam.py",
+        "summary":  "Image processing utilities for extracting control points from heatmaps, including heatmap filtering, centroid detection, polygon sampling, and visualization.",
+        "tags":  [
+                     "utility",
+                     "image-processing",
+                     "vision",
+                     "segmentation"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "function:code/src/policies/vstar/control_point_sam.py:sample_points_from_polygon",
+        "type":  "function",
+        "name":  "sample_points_from_polygon",
+        "filePath":  "code/src/policies/vstar/control_point_sam.py",
+        "summary":  "Samples uniformly distributed points along polygon boundary using perimeter-based distance intervals.",
+        "tags":  [
+                     "utility",
+                     "geometry"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "function:code/src/policies/vstar/control_point_sam.py:filter_heatmap_and_find_centroids",
+        "type":  "function",
+        "name":  "filter_heatmap_and_find_centroids",
+        "filePath":  "code/src/policies/vstar/control_point_sam.py",
+        "summary":  "Converts heatmap to binary mask and extracts connected component centroids above area threshold.",
+        "tags":  [
+                     "utility",
+                     "image-processing"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "function:code/src/policies/vstar/control_point_sam.py:filter_heatmap_and_find_control_points",
+        "type":  "function",
+        "name":  "filter_heatmap_and_find_control_points",
+        "filePath":  "code/src/policies/vstar/control_point_sam.py",
+        "summary":  "Extracts control point groups from heatmap by finding centroids and boundary points via convex hull sampling.",
+        "tags":  [
+                     "utility",
+                     "image-processing"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "function:code/src/policies/vstar/control_point_sam.py:cluster_centroids_for_prompts",
+        "type":  "function",
+        "name":  "cluster_centroids_for_prompts",
+        "filePath":  "code/src/policies/vstar/control_point_sam.py",
+        "summary":  "Clusters centroids using DBSCAN and returns grouped prompt points for multi-object segmentation.",
+        "tags":  [
+                     "utility",
+                     "clustering"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "function:code/src/policies/vstar/control_point_sam.py:get_mask_and_label_from_sam",
+        "type":  "function",
+        "name":  "get_mask_and_label_from_sam",
+        "filePath":  "code/src/policies/vstar/control_point_sam.py",
+        "summary":  "Mock SAM function that generates circular mask at given point for testing.",
+        "tags":  [
+                     "utility",
+                     "mock"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "function:code/src/policies/vstar/control_point_sam.py:iterative_object_extraction",
+        "type":  "function",
+        "name":  "iterative_object_extraction",
+        "filePath":  "code/src/policies/vstar/control_point_sam.py",
+        "summary":  "Iteratively extracts objects by processing control points and filtering overlapping masks.",
+        "tags":  [
+                     "utility",
+                     "iteration"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "function:code/src/policies/vstar/control_point_sam.py:visualize_highlighted_regions",
+        "type":  "function",
+        "name":  "visualize_highlighted_regions",
+        "filePath":  "code/src/policies/vstar/control_point_sam.py",
+        "summary":  "Visualizes heatmap, filtered mask, and control points overlaid on original image using matplotlib.",
+        "tags":  [
+                     "utility",
+                     "visualization"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "file:code/src/policies/vstar/MCTS.py",
+        "type":  "file",
+        "name":  "MCTS.py",
+        "filePath":  "code/src/policies/vstar/MCTS.py",
+        "summary":  "Monte Carlo Tree Search implementation for visual reasoning that explores image regions through repeat_question and zoom_out actions, evaluates answer options using VLM, and employs ensemble voting.",
+        "tags":  [
+                     "policy",
+                     "mcts",
+                     "reasoning",
+                     "complex-algorithm"
+                 ],
+        "complexity":  "complex"
+    },
+    {
+        "id":  "class:code/src/policies/vstar/MCTS.py:MCTSNode",
+        "type":  "class",
+        "name":  "MCTSNode",
+        "filePath":  "code/src/policies/vstar/MCTS.py",
+        "summary":  "MCTS tree node representing search state with image, action history, region coordinates, and expert information.",
+        "tags":  [
+                     "data-structure"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "class:code/src/policies/vstar/MCTS.py:MCTSQuestionSample",
+        "type":  "class",
+        "name":  "MCTSQuestionSample",
+        "filePath":  "code/src/policies/vstar/MCTS.py",
+        "summary":  "MCTS-based policy that performs multi-step visual reasoning with expert object detection, image cropping, and ensemble voting.",
+        "tags":  [
+                     "policy",
+                     "mcts",
+                     "async"
+                 ],
+        "complexity":  "complex"
+    },
+    {
+        "id":  "function:code/src/policies/vstar/MCTS.py:extract_key_objects",
+        "type":  "function",
+        "name":  "extract_key_objects",
+        "filePath":  "code/src/policies/vstar/MCTS.py",
+        "summary":  "Extracts key objects from question text using LLM-based parsing and regex filtering.",
+        "tags":  [
+                     "nlp",
+                     "async"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "function:code/src/policies/vstar/MCTS.py:get_expert_boxes",
+        "type":  "function",
+        "name":  "get_expert_boxes",
+        "filePath":  "code/src/policies/vstar/MCTS.py",
+        "summary":  "Queries expert detection service (LangSAM) for object bounding boxes using async HTTP client.",
+        "tags":  [
+                     "client",
+                     "async"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "function:code/src/policies/vstar/MCTS.py:selection",
+        "type":  "function",
+        "name":  "selection",
+        "filePath":  "code/src/policies/vstar/MCTS.py",
+        "summary":  "MCTS selection phase using UCB score to traverse tree towards most promising child.",
+        "tags":  [
+                     "mcts",
+                     "algorithm"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "function:code/src/policies/vstar/MCTS.py:execute_repeat_question_action",
+        "type":  "function",
+        "name":  "execute_repeat_question_action",
+        "filePath":  "code/src/policies/vstar/MCTS.py",
+        "summary":  "MCTS action that zooms to expert-detected region and repeats original question on cropped image.",
+        "tags":  [
+                     "mcts",
+                     "action",
+                     "async"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "function:code/src/policies/vstar/MCTS.py:execute_zoom_out_action",
+        "type":  "function",
+        "name":  "execute_zoom_out_action",
+        "filePath":  "code/src/policies/vstar/MCTS.py",
+        "summary":  "MCTS action that expands region by 1.5x around current region center and re-queries expert.",
+        "tags":  [
+                     "mcts",
+                     "action",
+                     "async"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "function:code/src/policies/vstar/MCTS.py:expansion",
+        "type":  "function",
+        "name":  "expansion",
+        "filePath":  "code/src/policies/vstar/MCTS.py",
+        "summary":  "MCTS expansion phase that executes randomly selected untried action.",
+        "tags":  [
+                     "mcts",
+                     "algorithm",
+                     "async"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "function:code/src/policies/vstar/MCTS.py:simulation",
+        "type":  "function",
+        "name":  "simulation",
+        "filePath":  "code/src/policies/vstar/MCTS.py",
+        "summary":  "MCTS simulation phase that checks for presence of key objects using binary yes/no questions.",
+        "tags":  [
+                     "mcts",
+                     "algorithm",
+                     "async"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "function:code/src/policies/vstar/MCTS.py:backpropagation",
+        "type":  "function",
+        "name":  "backpropagation",
+        "filePath":  "code/src/policies/vstar/MCTS.py",
+        "summary":  "MCTS backpropagation phase that updates node visit counts and cumulative values.",
+        "tags":  [
+                     "mcts",
+                     "algorithm"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "function:code/src/policies/vstar/MCTS.py:single_run",
+        "type":  "function",
+        "name":  "single_run",
+        "filePath":  "code/src/policies/vstar/MCTS.py",
+        "summary":  "Executes single MCTS simulation by performing selection, expansion, simulation, and backpropagation.",
+        "tags":  [
+                     "mcts",
+                     "algorithm",
+                     "async"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "function:code/src/policies/vstar/MCTS.py:get_final_answer",
+        "type":  "function",
+        "name":  "get_final_answer",
+        "filePath":  "code/src/policies/vstar/MCTS.py",
+        "summary":  "Runs multiple MCTS simulations, collects answers from all tree nodes, performs ensemble voting, and returns final answer.",
+        "tags":  [
+                     "mcts",
+                     "ensemble",
+                     "async"
+                 ],
+        "complexity":  "complex"
+    },
+    {
+        "id":  "function:code/src/policies/vstar/MCTS.py:serialize_tree",
+        "type":  "function",
+        "name":  "serialize_tree",
+        "filePath":  "code/src/policies/vstar/MCTS.py",
+        "summary":  "Recursively serializes MCTS tree structure to dictionary for saving to JSONL.",
+        "tags":  [
+                     "serialization"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "function:code/src/policies/vstar/MCTS.py:_process",
+        "type":  "function",
+        "name":  "_process",
+        "filePath":  "code/src/policies/vstar/MCTS.py",
+        "summary":  "Main entry point that orchestrates key object extraction and MCTS search for final answer.",
+        "tags":  [
+                     "orchestration",
+                     "async"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "file:code/src/policies/vstar/ours_mcts.py",
+        "type":  "file",
+        "name":  "ours_mcts.py",
+        "filePath":  "code/src/policies/vstar/ours_mcts.py",
+        "summary":  "Enhanced MCTS variant (OursMCTS) that uses visual grounding on initial full image to detect and justify candidate regions before MCTS search.",
+        "tags":  [
+                     "policy",
+                     "mcts",
+                     "visual-grounding",
+                     "justification"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "class:code/src/policies/vstar/ours_mcts.py:OursMCTSQuestionSample",
+        "type":  "class",
+        "name":  "OursMCTSQuestionSample",
+        "filePath":  "code/src/policies/vstar/ours_mcts.py",
+        "summary":  "MCTS variant with visual grounding preprocessing and object justification.",
+        "tags":  [
+                     "policy",
+                     "mcts"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "function:code/src/policies/vstar/ours_mcts.py:get_final_answer",
+        "type":  "function",
+        "name":  "get_final_answer",
+        "filePath":  "code/src/policies/vstar/ours_mcts.py",
+        "summary":  "Overrides parent to add visual grounding preprocessing and object justification before MCTS search.",
+        "tags":  [
+                     "override",
+                     "async"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "function:code/src/policies/vstar/ours_mcts.py:justify",
+        "type":  "function",
+        "name":  "justify",
+        "filePath":  "code/src/policies/vstar/ours_mcts.py",
+        "summary":  "Validates detected objects by querying VLM and computing union bounding box of confirmed regions.",
+        "tags":  [
+                     "validation",
+                     "async"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "function:code/src/policies/vstar/ours_mcts.py:convert_bbox_to_original_frame",
+        "type":  "function",
+        "name":  "convert_bbox_to_original_frame",
+        "filePath":  "code/src/policies/vstar/ours_mcts.py",
+        "summary":  "Converts bounding box coordinates from resized image space back to original image space.",
+        "tags":  [
+                     "utility",
+                     "coordinate-transformation"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "file:code/src/policies/vstar/policy.py",
+        "type":  "file",
+        "name":  "policy.py",
+        "filePath":  "code/src/policies/vstar/policy.py",
+        "summary":  "Base abstract policy class for question answering with image processing, OpenAI/Qwen VLM generation, and error handling.",
+        "tags":  [
+                     "policy",
+                     "base-class",
+                     "abstract",
+                     "async"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "class:code/src/policies/vstar/policy.py:QuestionSample",
+        "type":  "class",
+        "name":  "QuestionSample",
+        "filePath":  "code/src/policies/vstar/policy.py",
+        "summary":  "Abstract base class for question answering policies with image decoding, VLM client management, and option parsing.",
+        "tags":  [
+                     "policy",
+                     "base-class",
+                     "abstract"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "function:code/src/policies/vstar/policy.py:generate",
+        "type":  "function",
+        "name":  "generate",
+        "filePath":  "code/src/policies/vstar/policy.py",
+        "summary":  "Generates text from image and prompt using OpenAI-compatible API with load balancing across clients.",
+        "tags":  [
+                     "inference",
+                     "async"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "function:code/src/policies/vstar/policy.py:generate_local",
+        "type":  "function",
+        "name":  "generate_local",
+        "filePath":  "code/src/policies/vstar/policy.py",
+        "summary":  "Generates text using local Qwen VLM runtime with configurable concurrency control.",
+        "tags":  [
+                     "inference",
+                     "async"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "function:code/src/policies/vstar/policy.py:process",
+        "type":  "function",
+        "name":  "process",
+        "filePath":  "code/src/policies/vstar/policy.py",
+        "summary":  "Public process entry point with exception handling that delegates to subclass-specific _process method.",
+        "tags":  [
+                     "orchestration",
+                     "error-handling",
+                     "async"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "file:code/src/policies/vstar/visual_grounding.py",
+        "type":  "file",
+        "name":  "visual_grounding.py",
+        "filePath":  "code/src/policies/vstar/visual_grounding.py",
+        "summary":  "Visual grounding pipeline that extracts candidate objects from heatmap-based region proposals using control points and iterative SAM-2 segmentation.",
+        "tags":  [
+                     "grounding",
+                     "utility",
+                     "vision",
+                     "segmentation"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "function:code/src/policies/vstar/visual_grounding.py:filter_points_by_mask",
+        "type":  "function",
+        "name":  "filter_points_by_mask",
+        "filePath":  "code/src/policies/vstar/visual_grounding.py",
+        "summary":  "Filters point list by removing points covered by existing mask.",
+        "tags":  [
+                     "utility",
+                     "filtering"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "function:code/src/policies/vstar/visual_grounding.py:filter_groups_by_mask",
+        "type":  "function",
+        "name":  "filter_groups_by_mask",
+        "filePath":  "code/src/policies/vstar/visual_grounding.py",
+        "summary":  "Filters grouped control points by removing groups with centroid covered by existing mask.",
+        "tags":  [
+                     "utility",
+                     "filtering"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "function:code/src/policies/vstar/visual_grounding.py:calculate_iou",
+        "type":  "function",
+        "name":  "calculate_iou",
+        "filePath":  "code/src/policies/vstar/visual_grounding.py",
+        "summary":  "Computes Intersection over Union between two binary masks.",
+        "tags":  [
+                     "utility",
+                     "metric"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "function:code/src/policies/vstar/visual_grounding.py:get_bbox_from_mask_numpy",
+        "type":  "function",
+        "name":  "get_bbox_from_mask_numpy",
+        "filePath":  "code/src/policies/vstar/visual_grounding.py",
+        "summary":  "Extracts axis-aligned bounding box from binary mask.",
+        "tags":  [
+                     "utility",
+                     "geometry"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "function:code/src/policies/vstar/visual_grounding.py:merge_overlapping_masks",
+        "type":  "function",
+        "name":  "merge_overlapping_masks",
+        "filePath":  "code/src/policies/vstar/visual_grounding.py",
+        "summary":  "Merges masks with IoU above threshold and applies morphological closing.",
+        "tags":  [
+                     "utility",
+                     "image-processing"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "function:code/src/policies/vstar/visual_grounding.py:iterative_segmentation_from_heatmap",
+        "type":  "function",
+        "name":  "iterative_segmentation_from_heatmap",
+        "filePath":  "code/src/policies/vstar/visual_grounding.py",
+        "summary":  "Iteratively extracts and merges object masks by querying SAM-2 for each control point.",
+        "tags":  [
+                     "iteration",
+                     "segmentation"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "function:code/src/policies/vstar/visual_grounding.py:grounding",
+        "type":  "function",
+        "name":  "grounding",
+        "filePath":  "code/src/policies/vstar/visual_grounding.py",
+        "summary":  "Main visual grounding pipeline that fetches heatmap, extracts control points, segments objects, and returns cropped proposals.",
+        "tags":  [
+                     "orchestration",
+                     "grounding"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "file:code/src/qwen_runtime.py",
+        "type":  "file",
+        "name":  "qwen_runtime.py",
+        "filePath":  "code/src/qwen_runtime.py",
+        "summary":  "Qwen VLM runtime wrapper providing async image-to-text generation with dtype conversion, processor configuration, and lazy singleton loading.",
+        "tags":  [
+                     "runtime",
+                     "inference",
+                     "language-model",
+                     "async",
+                     "transformers"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "class:code/src/qwen_runtime.py:QwenVLRuntime",
+        "type":  "class",
+        "name":  "QwenVLRuntime",
+        "filePath":  "code/src/qwen_runtime.py",
+        "summary":  "Manages Qwen VLM model and processor with async generation, image preprocessing, and concurrency control.",
+        "tags":  [
+                     "runtime",
+                     "inference"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "function:code/src/qwen_runtime.py:_to_dtype",
+        "type":  "function",
+        "name":  "_to_dtype",
+        "filePath":  "code/src/qwen_runtime.py",
+        "summary":  "Converts dtype string to torch dtype or auto mode.",
+        "tags":  [
+                     "utility"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "function:code/src/qwen_runtime.py:_to_pil_image",
+        "type":  "function",
+        "name":  "_to_pil_image",
+        "filePath":  "code/src/qwen_runtime.py",
+        "summary":  "Converts string (base64/path/data-url) or PIL image to RGB PIL Image.",
+        "tags":  [
+                     "utility",
+                     "image-processing"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "function:code/src/qwen_runtime.py:_to_pil_images",
+        "type":  "function",
+        "name":  "_to_pil_images",
+        "filePath":  "code/src/qwen_runtime.py",
+        "summary":  "Converts single image or list of images to list of PIL Images.",
+        "tags":  [
+                     "utility",
+                     "image-processing"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "function:code/src/qwen_runtime.py:_blocking_generate",
+        "type":  "function",
+        "name":  "_blocking_generate",
+        "filePath":  "code/src/qwen_runtime.py",
+        "summary":  "Blocking generation method that runs in executor, processing images and text through Qwen model.",
+        "tags":  [
+                     "inference"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "function:code/src/qwen_runtime.py:generate",
+        "type":  "function",
+        "name":  "generate",
+        "filePath":  "code/src/qwen_runtime.py",
+        "summary":  "Async wrapper that runs blocking generation in executor with concurrency control via semaphore.",
+        "tags":  [
+                     "inference",
+                     "async"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "function:code/src/qwen_runtime.py:get_qwen_runtime",
+        "type":  "function",
+        "name":  "get_qwen_runtime",
+        "filePath":  "code/src/qwen_runtime.py",
+        "summary":  "Lazy-loads and returns singleton QwenVLRuntime instance with thread-safe locking.",
+        "tags":  [
+                     "factory",
+                     "singleton"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "file:code/src/run_single_sample.py",
+        "type":  "file",
+        "name":  "run_single_sample.py",
+        "filePath":  "code/src/run_single_sample.py",
+        "summary":  "CLI script for single-sample inference that loads question data, selects a sample, instantiates policy, and runs question processing.",
+        "tags":  [
+                     "cli",
+                     "orchestration",
+                     "async"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "function:code/src/run_single_sample.py:_select_row",
+        "type":  "function",
+        "name":  "_select_row",
+        "filePath":  "code/src/run_single_sample.py",
+        "summary":  "Selects a single question row from dataframe by row index or index column value.",
+        "tags":  [
+                     "utility"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "function:code/src/run_single_sample.py:_ensure_image_base64",
+        "type":  "function",
+        "name":  "_ensure_image_base64",
+        "filePath":  "code/src/run_single_sample.py",
+        "summary":  "Validates that image column exists and contains non-null base64 data.",
+        "tags":  [
+                     "validation"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "function:code/src/run_single_sample.py:run_single_sample",
+        "type":  "function",
+        "name":  "run_single_sample",
+        "filePath":  "code/src/run_single_sample.py",
+        "summary":  "Main entry point that loads questions, selects sample, instantiates policy, processes across multiple rounds, and saves results.",
+        "tags":  [
+                     "orchestration",
+                     "async"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "file:code/src/run.py",
+        "type":  "file",
+        "name":  "run.py",
+        "filePath":  "code/src/run.py",
+        "summary":  "CLI script for batch evaluation that loads question data, parallelizes sample creation and processing, and writes JSONL results.",
+        "tags":  [
+                     "cli",
+                     "orchestration",
+                     "async",
+                     "batch-processing"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "function:code/src/run.py:create_sample",
+        "type":  "function",
+        "name":  "create_sample",
+        "filePath":  "code/src/run.py",
+        "summary":  "Creates QuestionSample instance from row data and method configuration.",
+        "tags":  [
+                     "factory"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "function:code/src/run.py:process_sample",
+        "type":  "function",
+        "name":  "process_sample",
+        "filePath":  "code/src/run.py",
+        "summary":  "Processes single sample by calling its async process method.",
+        "tags":  [
+                     "orchestration",
+                     "async"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "function:code/src/run.py:eval_model",
+        "type":  "function",
+        "name":  "eval_model",
+        "filePath":  "code/src/run.py",
+        "summary":  "Main evaluation loop that creates samples, processes in parallel using asyncio, and writes results to JSONL.",
+        "tags":  [
+                     "orchestration",
+                     "async",
+                     "batch-processing"
+                 ],
+        "complexity":  "moderate"
+    },
+    {
+        "id":  "file:code/src/utils.py",
+        "type":  "file",
+        "name":  "utils.py",
+        "filePath":  "code/src/utils.py",
+        "summary":  "Utility module providing OpenAI client configuration, list chunking, null value checking, and image loading helpers.",
+        "tags":  [
+                     "utility"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "function:code/src/utils.py:get_openai_clients_and_models",
+        "type":  "function",
+        "name":  "get_openai_clients_and_models",
+        "filePath":  "code/src/utils.py",
+        "summary":  "Creates OpenAI AsyncOpenAI clients per GPU with local API base URLs for load balancing.",
+        "tags":  [
+                     "utility",
+                     "client-factory"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "function:code/src/utils.py:split_list",
+        "type":  "function",
+        "name":  "split_list",
+        "filePath":  "code/src/utils.py",
+        "summary":  "Splits list into n roughly equal-sized chunks.",
+        "tags":  [
+                     "utility"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "function:code/src/utils.py:get_chunk",
+        "type":  "function",
+        "name":  "get_chunk",
+        "filePath":  "code/src/utils.py",
+        "summary":  "Returns k-th chunk from n-way split of list.",
+        "tags":  [
+                     "utility"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "function:code/src/utils.py:is_none",
+        "type":  "function",
+        "name":  "is_none",
+        "filePath":  "code/src/utils.py",
+        "summary":  "Checks if value is None, NaN float, or string \u0027nan\u0027/\u0027none\u0027.",
+        "tags":  [
+                     "utility",
+                     "validation"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "function:code/src/utils.py:get_options",
+        "type":  "function",
+        "name":  "get_options",
+        "filePath":  "code/src/utils.py",
+        "summary":  "Extracts non-null option values from row dictionary by letter keys.",
+        "tags":  [
+                     "utility"
+                 ],
+        "complexity":  "simple"
+    },
+    {
+        "id":  "function:code/src/utils.py:load_image_from_base64",
+        "type":  "function",
+        "name":  "load_image_from_base64",
+        "filePath":  "code/src/utils.py",
+        "summary":  "Decodes base64 string to PIL RGB image.",
+        "tags":  [
+                     "utility",
+                     "image-processing"
+                 ],
+        "complexity":  "simple"
+    }
+],
+  "edges": [
+    {
+        "source":  "document:README.md",
+        "target":  "document:docs/architecture.md",
+        "type":  "documents",
+        "weight":  0.9,
+        "direction":  "forward"
+    },
+    {
+        "source":  "document:README.md",
+        "target":  "document:docs/experiment_flow.md",
+        "type":  "documents",
+        "weight":  0.8,
+        "direction":  "forward"
+    },
+    {
+        "source":  "document:README.md",
+        "target":  "document:docs/DeepScan-Paper.pdf",
+        "type":  "documents",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "document:README.md",
+        "target":  "file:data:figs/teaser.png",
+        "type":  "documents",
+        "weight":  0.8,
+        "direction":  "forward"
+    },
+    {
+        "source":  "document:README.md",
+        "target":  "file:data:figs/teaser.pdf",
+        "type":  "documents",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "document:README.md",
+        "target":  "config:deepscan.yml",
+        "type":  "documents",
+        "weight":  0.9,
+        "direction":  "forward"
+    },
+    {
+        "source":  "document:README.md",
+        "target":  "config:langsam.yml",
+        "type":  "documents",
+        "weight":  0.9,
+        "direction":  "forward"
+    },
+    {
+        "source":  "document:README.md",
+        "target":  "config:lavis.yml",
+        "type":  "documents",
+        "weight":  0.9,
+        "direction":  "forward"
+    },
+    {
+        "source":  "document:README.md",
+        "target":  "file:script:code/scripts/blip_server/start_server.sh",
+        "type":  "documents",
+        "weight":  0.8,
+        "direction":  "forward"
+    },
+    {
+        "source":  "document:README.md",
+        "target":  "file:script:code/scripts/expert_server/start_server.sh",
+        "type":  "documents",
+        "weight":  0.8,
+        "direction":  "forward"
+    },
+    {
+        "source":  "document:README.md",
+        "target":  "file:script:code/scripts/sam2_server/start_server.sh",
+        "type":  "documents",
+        "weight":  0.8,
+        "direction":  "forward"
+    },
+    {
+        "source":  "document:README.md",
+        "target":  "file:script:code/scripts/vstar/stream_vstar_qwen.sh",
+        "type":  "documents",
+        "weight":  0.9,
+        "direction":  "forward"
+    },
+    {
+        "source":  "document:docs/architecture.md",
+        "target":  "document:docs/experiment_flow.md",
+        "type":  "related",
+        "weight":  0.85,
+        "direction":  "forward"
+    },
+    {
+        "source":  "document:docs/architecture.md",
+        "target":  "document:docs/DeepScan-Paper.pdf",
+        "type":  "documents",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "document:docs/architecture.md",
+        "target":  "file:data:figs/model.pdf",
+        "type":  "documents",
+        "weight":  0.6,
+        "direction":  "forward"
+    },
+    {
+        "source":  "document:docs/experiment_flow.md",
+        "target":  "document:docs/DeepScan-Paper.pdf",
+        "type":  "related",
+        "weight":  0.6,
+        "direction":  "forward"
+    },
+    {
+        "source":  "config:deepscan.yml",
+        "target":  "file:script:code/scripts/vstar/stream_vstar_qwen.sh",
+        "type":  "configures",
+        "weight":  0.85,
+        "direction":  "forward"
+    },
+    {
+        "source":  "config:langsam.yml",
+        "target":  "file:script:code/scripts/expert_server/start_server.sh",
+        "type":  "configures",
+        "weight":  0.9,
+        "direction":  "forward"
+    },
+    {
+        "source":  "config:langsam.yml",
+        "target":  "file:script:code/scripts/sam2_server/start_server.sh",
+        "type":  "configures",
+        "weight":  0.9,
+        "direction":  "forward"
+    },
+    {
+        "source":  "config:lavis.yml",
+        "target":  "file:script:code/scripts/blip_server/start_server.sh",
+        "type":  "configures",
+        "weight":  0.9,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:script:code/scripts/blip_server/start_server.sh",
+        "target":  "config:lavis.yml",
+        "type":  "related",
+        "weight":  0.8,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:script:code/scripts/expert_server/start_server.sh",
+        "target":  "config:langsam.yml",
+        "type":  "related",
+        "weight":  0.8,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:script:code/scripts/sam2_server/start_server.sh",
+        "target":  "config:langsam.yml",
+        "type":  "related",
+        "weight":  0.8,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:script:code/scripts/vstar/stream_vstar_qwen.sh",
+        "target":  "file:script:code/scripts/blip_server/start_server.sh",
+        "type":  "related",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:script:code/scripts/vstar/stream_vstar_qwen.sh",
+        "target":  "file:script:code/scripts/expert_server/start_server.sh",
+        "type":  "related",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:script:code/scripts/vstar/stream_vstar_qwen.sh",
+        "target":  "file:script:code/scripts/sam2_server/start_server.sh",
+        "type":  "related",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "document:docs/architecture.md",
+        "target":  "file:script:code/scripts/blip_server/start_server.sh",
+        "type":  "documents",
+        "weight":  0.8,
+        "direction":  "forward"
+    },
+    {
+        "source":  "document:docs/architecture.md",
+        "target":  "file:script:code/scripts/expert_server/start_server.sh",
+        "type":  "documents",
+        "weight":  0.8,
+        "direction":  "forward"
+    },
+    {
+        "source":  "document:docs/architecture.md",
+        "target":  "file:script:code/scripts/sam2_server/start_server.sh",
+        "type":  "documents",
+        "weight":  0.8,
+        "direction":  "forward"
+    },
+    {
+        "source":  "document:docs/experiment_flow.md",
+        "target":  "file:script:code/scripts/vstar/stream_vstar_qwen.sh",
+        "type":  "documents",
+        "weight":  0.85,
+        "direction":  "forward"
+    },
+    {
+        "source":  "document:LICENSE.txt",
+        "target":  "document:README.md",
+        "type":  "related",
+        "weight":  0.5,
+        "direction":  "forward"
+    },
+    {
+        "source":  "config:.claude/settings.local.json",
+        "target":  "document:README.md",
+        "type":  "related",
+        "weight":  0.3,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:data:figs/sample.pdf",
+        "target":  "document:docs/experiment_flow.md",
+        "type":  "documents",
+        "weight":  0.6,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/scripts/blip_server/blip_service.py",
+        "target":  "class:code/scripts/blip_server/blip_service.py:AttentionRequest",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/scripts/blip_server/blip_service.py",
+        "target":  "function:code/scripts/blip_server/blip_service.py:resize_to_multiple",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/scripts/blip_server/blip_service.py",
+        "target":  "function:code/scripts/blip_server/blip_service.py:genAttnMap",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/scripts/blip_server/blip_service.py",
+        "target":  "function:code/scripts/blip_server/blip_service.py:compute_attention",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/scripts/blip_server/blip_service.py",
+        "target":  "function:code/scripts/blip_server/blip_service.py:compute_full_attention",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/scripts/blip_server/blip_service.py",
+        "target":  "function:code/scripts/blip_server/blip_service.py:filter_masks_api",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/scripts/blip_server/blip_service.py",
+        "target":  "function:code/scripts/blip_server/blip_service.py:attention_map",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/scripts/blip_server/blip_service.py:compute_full_attention",
+        "target":  "function:code/scripts/blip_server/blip_service.py:resize_to_multiple",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/scripts/blip_server/blip_service.py:compute_full_attention",
+        "target":  "function:code/scripts/blip_server/blip_service.py:genAttnMap",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/scripts/blip_server/blip_service.py:compute_attention",
+        "target":  "function:code/scripts/blip_server/blip_service.py:genAttnMap",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/scripts/blip_server/blip_service.py:attention_map",
+        "target":  "function:code/scripts/blip_server/blip_service.py:compute_full_attention",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/scripts/expert_server/model_service.py",
+        "target":  "class:code/scripts/expert_server/model_service.py:ImageRequest",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/scripts/expert_server/model_service.py",
+        "target":  "class:code/scripts/expert_server/model_service.py:PredictionResponse",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/scripts/expert_server/model_service.py",
+        "target":  "class:code/scripts/expert_server/model_service.py:BatchProcessor",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/scripts/expert_server/model_service.py",
+        "target":  "function:code/scripts/expert_server/model_service.py:predict",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/scripts/expert_server/model_service.py:predict",
+        "target":  "class:code/scripts/expert_server/model_service.py:BatchProcessor",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/scripts/sam2_server/sam2_service.py",
+        "target":  "class:code/scripts/sam2_server/sam2_service.py:PointPromptReq",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/scripts/sam2_server/sam2_service.py",
+        "target":  "class:code/scripts/sam2_server/sam2_service.py:PointPromptResp",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/scripts/sam2_server/sam2_service.py",
+        "target":  "class:code/scripts/sam2_server/sam2_service.py:_Sam2Engine",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/scripts/sam2_server/sam2_service.py",
+        "target":  "function:code/scripts/sam2_server/sam2_service.py:_b64_to_rgb_ndarray",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/scripts/sam2_server/sam2_service.py",
+        "target":  "function:code/scripts/sam2_server/sam2_service.py:_ndarray_to_b64_dict",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/scripts/sam2_server/sam2_service.py",
+        "target":  "function:code/scripts/sam2_server/sam2_service.py:point_predict",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/scripts/sam2_server/sam2_service.py:point_predict",
+        "target":  "function:code/scripts/sam2_server/sam2_service.py:_b64_to_rgb_ndarray",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/scripts/sam2_server/sam2_service.py:point_predict",
+        "target":  "function:code/scripts/sam2_server/sam2_service.py:_ndarray_to_b64_dict",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/policies/__init__.py",
+        "target":  "file:code/src/policies/vstar/__init__.py",
+        "type":  "imports",
+        "weight":  0.8,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/policies/vstar/__init__.py",
+        "target":  "file:code/src/policies/vstar/policy.py",
+        "type":  "imports",
+        "weight":  0.8,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/policies/vstar/client.py",
+        "target":  "function:code/src/policies/vstar/client.py:get_heatmap",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/policies/vstar/client.py",
+        "target":  "function:code/src/policies/vstar/client.py:get_mask_point",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/policies/vstar/control_point_sam.py",
+        "target":  "function:code/src/policies/vstar/control_point_sam.py:sample_points_from_polygon",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/policies/vstar/control_point_sam.py",
+        "target":  "function:code/src/policies/vstar/control_point_sam.py:filter_heatmap_and_find_centroids",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/policies/vstar/control_point_sam.py",
+        "target":  "function:code/src/policies/vstar/control_point_sam.py:filter_heatmap_and_find_control_points",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/policies/vstar/control_point_sam.py",
+        "target":  "function:code/src/policies/vstar/control_point_sam.py:cluster_centroids_for_prompts",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/policies/vstar/control_point_sam.py",
+        "target":  "function:code/src/policies/vstar/control_point_sam.py:get_mask_and_label_from_sam",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/policies/vstar/control_point_sam.py",
+        "target":  "function:code/src/policies/vstar/control_point_sam.py:iterative_object_extraction",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/policies/vstar/control_point_sam.py",
+        "target":  "function:code/src/policies/vstar/control_point_sam.py:visualize_highlighted_regions",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/src/policies/vstar/control_point_sam.py:filter_heatmap_and_find_control_points",
+        "target":  "function:code/src/policies/vstar/control_point_sam.py:sample_points_from_polygon",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/src/policies/vstar/control_point_sam.py:iterative_object_extraction",
+        "target":  "function:code/src/policies/vstar/control_point_sam.py:get_mask_and_label_from_sam",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/policies/vstar/MCTS.py",
+        "target":  "file:code/src/policies/vstar/policy.py",
+        "type":  "imports",
+        "weight":  0.8,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/policies/vstar/MCTS.py",
+        "target":  "class:code/src/policies/vstar/MCTS.py:MCTSNode",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/policies/vstar/MCTS.py",
+        "target":  "class:code/src/policies/vstar/MCTS.py:MCTSQuestionSample",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "class:code/src/policies/vstar/MCTS.py:MCTSQuestionSample",
+        "target":  "file:code/src/policies/vstar/policy.py",
+        "type":  "related",
+        "weight":  0.9,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/src/policies/vstar/MCTS.py:execute_repeat_question_action",
+        "target":  "function:code/src/policies/vstar/MCTS.py:get_expert_boxes",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/src/policies/vstar/MCTS.py:execute_zoom_out_action",
+        "target":  "function:code/src/policies/vstar/MCTS.py:get_expert_boxes",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/src/policies/vstar/MCTS.py:single_run",
+        "target":  "function:code/src/policies/vstar/MCTS.py:selection",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/src/policies/vstar/MCTS.py:single_run",
+        "target":  "function:code/src/policies/vstar/MCTS.py:expansion",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/src/policies/vstar/MCTS.py:single_run",
+        "target":  "function:code/src/policies/vstar/MCTS.py:simulation",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/src/policies/vstar/MCTS.py:single_run",
+        "target":  "function:code/src/policies/vstar/MCTS.py:backpropagation",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/src/policies/vstar/MCTS.py:get_final_answer",
+        "target":  "function:code/src/policies/vstar/MCTS.py:single_run",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/src/policies/vstar/MCTS.py:_process",
+        "target":  "function:code/src/policies/vstar/MCTS.py:extract_key_objects",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/src/policies/vstar/MCTS.py:_process",
+        "target":  "function:code/src/policies/vstar/MCTS.py:get_final_answer",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/policies/vstar/ours_mcts.py",
+        "target":  "file:code/src/policies/vstar/MCTS.py",
+        "type":  "imports",
+        "weight":  0.8,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/policies/vstar/ours_mcts.py",
+        "target":  "file:code/src/policies/vstar/client.py",
+        "type":  "imports",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/policies/vstar/ours_mcts.py",
+        "target":  "file:code/src/policies/vstar/visual_grounding.py",
+        "type":  "imports",
+        "weight":  0.8,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/policies/vstar/ours_mcts.py",
+        "target":  "class:code/src/policies/vstar/ours_mcts.py:OursMCTSQuestionSample",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "class:code/src/policies/vstar/ours_mcts.py:OursMCTSQuestionSample",
+        "target":  "class:code/src/policies/vstar/MCTS.py:MCTSQuestionSample",
+        "type":  "related",
+        "weight":  0.9,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/src/policies/vstar/ours_mcts.py:get_final_answer",
+        "target":  "file:code/src/policies/vstar/visual_grounding.py",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/src/policies/vstar/ours_mcts.py:get_final_answer",
+        "target":  "function:code/src/policies/vstar/ours_mcts.py:justify",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/policies/vstar/policy.py",
+        "target":  "file:code/src/qwen_runtime.py",
+        "type":  "imports",
+        "weight":  0.8,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/policies/vstar/policy.py",
+        "target":  "class:code/src/policies/vstar/policy.py:QuestionSample",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/policies/vstar/policy.py",
+        "target":  "function:code/src/policies/vstar/policy.py:generate",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/policies/vstar/policy.py",
+        "target":  "function:code/src/policies/vstar/policy.py:generate_local",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/policies/vstar/policy.py",
+        "target":  "function:code/src/policies/vstar/policy.py:process",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/src/policies/vstar/policy.py:generate_local",
+        "target":  "file:code/src/qwen_runtime.py",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/policies/vstar/visual_grounding.py",
+        "target":  "file:code/src/policies/vstar/client.py",
+        "type":  "imports",
+        "weight":  0.8,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/policies/vstar/visual_grounding.py",
+        "target":  "file:code/src/policies/vstar/control_point_sam.py",
+        "type":  "imports",
+        "weight":  0.8,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/policies/vstar/visual_grounding.py",
+        "target":  "function:code/src/policies/vstar/visual_grounding.py:filter_points_by_mask",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/policies/vstar/visual_grounding.py",
+        "target":  "function:code/src/policies/vstar/visual_grounding.py:filter_groups_by_mask",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/policies/vstar/visual_grounding.py",
+        "target":  "function:code/src/policies/vstar/visual_grounding.py:calculate_iou",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/policies/vstar/visual_grounding.py",
+        "target":  "function:code/src/policies/vstar/visual_grounding.py:get_bbox_from_mask_numpy",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/policies/vstar/visual_grounding.py",
+        "target":  "function:code/src/policies/vstar/visual_grounding.py:merge_overlapping_masks",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/policies/vstar/visual_grounding.py",
+        "target":  "function:code/src/policies/vstar/visual_grounding.py:iterative_segmentation_from_heatmap",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/policies/vstar/visual_grounding.py",
+        "target":  "function:code/src/policies/vstar/visual_grounding.py:grounding",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/src/policies/vstar/visual_grounding.py:iterative_segmentation_from_heatmap",
+        "target":  "function:code/src/policies/vstar/visual_grounding.py:filter_points_by_mask",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/src/policies/vstar/visual_grounding.py:iterative_segmentation_from_heatmap",
+        "target":  "function:code/src/policies/vstar/visual_grounding.py:merge_overlapping_masks",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/src/policies/vstar/visual_grounding.py:grounding",
+        "target":  "file:code/src/policies/vstar/client.py",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/src/policies/vstar/visual_grounding.py:grounding",
+        "target":  "file:code/src/policies/vstar/control_point_sam.py",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/src/policies/vstar/visual_grounding.py:grounding",
+        "target":  "function:code/src/policies/vstar/visual_grounding.py:iterative_segmentation_from_heatmap",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/qwen_runtime.py",
+        "target":  "class:code/src/qwen_runtime.py:QwenVLRuntime",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/qwen_runtime.py",
+        "target":  "function:code/src/qwen_runtime.py:_to_dtype",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/qwen_runtime.py",
+        "target":  "function:code/src/qwen_runtime.py:_to_pil_image",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/qwen_runtime.py",
+        "target":  "function:code/src/qwen_runtime.py:_to_pil_images",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/qwen_runtime.py",
+        "target":  "function:code/src/qwen_runtime.py:_blocking_generate",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/qwen_runtime.py",
+        "target":  "function:code/src/qwen_runtime.py:generate",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/qwen_runtime.py",
+        "target":  "function:code/src/qwen_runtime.py:get_qwen_runtime",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/src/qwen_runtime.py:_to_pil_images",
+        "target":  "function:code/src/qwen_runtime.py:_to_pil_image",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/src/qwen_runtime.py:_blocking_generate",
+        "target":  "function:code/src/qwen_runtime.py:_to_pil_images",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/src/qwen_runtime.py:generate",
+        "target":  "function:code/src/qwen_runtime.py:_blocking_generate",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/src/qwen_runtime.py:get_qwen_runtime",
+        "target":  "class:code/src/qwen_runtime.py:QwenVLRuntime",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/run_single_sample.py",
+        "target":  "file:code/src/utils.py",
+        "type":  "imports",
+        "weight":  0.8,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/run_single_sample.py",
+        "target":  "file:code/src/policies/__init__.py",
+        "type":  "imports",
+        "weight":  0.8,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/run_single_sample.py",
+        "target":  "function:code/src/run_single_sample.py:_select_row",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/run_single_sample.py",
+        "target":  "function:code/src/run_single_sample.py:_ensure_image_base64",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/run_single_sample.py",
+        "target":  "function:code/src/run_single_sample.py:run_single_sample",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/src/run_single_sample.py:run_single_sample",
+        "target":  "function:code/src/run_single_sample.py:_select_row",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/src/run_single_sample.py:run_single_sample",
+        "target":  "function:code/src/run_single_sample.py:_ensure_image_base64",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/run.py",
+        "target":  "file:code/src/utils.py",
+        "type":  "imports",
+        "weight":  0.8,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/run.py",
+        "target":  "file:code/src/policies/__init__.py",
+        "type":  "imports",
+        "weight":  0.8,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/run.py",
+        "target":  "function:code/src/run.py:create_sample",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/run.py",
+        "target":  "function:code/src/run.py:process_sample",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/run.py",
+        "target":  "function:code/src/run.py:eval_model",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/src/run.py:eval_model",
+        "target":  "function:code/src/run.py:create_sample",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/src/run.py:eval_model",
+        "target":  "function:code/src/run.py:process_sample",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/utils.py",
+        "target":  "function:code/src/utils.py:get_openai_clients_and_models",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/utils.py",
+        "target":  "function:code/src/utils.py:split_list",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/utils.py",
+        "target":  "function:code/src/utils.py:get_chunk",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/utils.py",
+        "target":  "function:code/src/utils.py:is_none",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/utils.py",
+        "target":  "function:code/src/utils.py:get_options",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "file:code/src/utils.py",
+        "target":  "function:code/src/utils.py:load_image_from_base64",
+        "type":  "contains",
+        "weight":  1.0,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/src/utils.py:get_chunk",
+        "target":  "function:code/src/utils.py:split_list",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    },
+    {
+        "source":  "function:code/src/utils.py:get_options",
+        "target":  "function:code/src/utils.py:is_none",
+        "type":  "calls",
+        "weight":  0.7,
+        "direction":  "forward"
+    }
+],
+  "layers": [
+    {
+        "id":  "layer:documentation-and-configuration",
+        "name":  "Documentation \u0026 Configuration",
+        "description":  "Top-level documentation, licensing, and environment configuration files. Define project structure, setup instructions, architectural decisions, and conda environments for different services.",
+        "nodeIds":  [
+                        "document:README.md",
+                        "document:LICENSE.txt",
+                        "document:docs/architecture.md",
+                        "document:docs/experiment_flow.md",
+                        "document:docs/DeepScan-Paper.pdf",
+                        "file:data:figs/teaser.png",
+                        "file:data:figs/teaser.pdf",
+                        "file:data:figs/model.pdf",
+                        "file:data:figs/sample.pdf",
+                        "config:deepscan.yml",
+                        "config:langsam.yml",
+                        "config:lavis.yml",
+                        "config:.claude/settings.local.json"
+                    ]
+    },
+    {
+        "id":  "layer:runtime-orchestration",
+        "name":  "Runtime Orchestration",
+        "description":  "Entry points for evaluation and batch processing. Coordinates the full pipeline including sample creation, policy instantiation, parallel processing, and result serialization.",
+        "nodeIds":  [
+                        "file:code/src/run.py",
+                        "file:code/src/run_single_sample.py",
+                        "file:script:code/scripts/vstar/stream_vstar_qwen.sh",
+                        "function:code/src/run.py:eval_model",
+                        "function:code/src/run.py:create_sample",
+                        "function:code/src/run.py:process_sample",
+                        "function:code/src/run_single_sample.py:run_single_sample",
+                        "function:code/src/run_single_sample.py:_select_row",
+                        "function:code/src/run_single_sample.py:_ensure_image_base64"
+                    ]
+    },
+    {
+        "id":  "layer:policy-and-inference-strategy",
+        "name":  "Policy \u0026 Inference Strategy",
+        "description":  "Core reasoning logic implementing visual grounding and MCTS-based multi-step inference. Includes base policy class, MCTS variants (standard and enhanced with visual grounding), visual grounding pipeline, and control point extraction utilities.",
+        "nodeIds":  [
+                        "file:code/src/policies/__init__.py",
+                        "file:code/src/policies/vstar/__init__.py",
+                        "file:code/src/policies/vstar/policy.py",
+                        "file:code/src/policies/vstar/MCTS.py",
+                        "file:code/src/policies/vstar/ours_mcts.py",
+                        "file:code/src/policies/vstar/visual_grounding.py",
+                        "file:code/src/policies/vstar/control_point_sam.py",
+                        "file:code/src/policies/vstar/client.py",
+                        "class:code/src/policies/vstar/policy.py:QuestionSample",
+                        "class:code/src/policies/vstar/MCTS.py:MCTSNode",
+                        "class:code/src/policies/vstar/MCTS.py:MCTSQuestionSample",
+                        "class:code/src/policies/vstar/ours_mcts.py:OursMCTSQuestionSample",
+                        "function:code/src/policies/vstar/policy.py:generate",
+                        "function:code/src/policies/vstar/policy.py:generate_local",
+                        "function:code/src/policies/vstar/policy.py:process",
+                        "function:code/src/policies/vstar/MCTS.py:extract_key_objects",
+                        "function:code/src/policies/vstar/MCTS.py:get_expert_boxes",
+                        "function:code/src/policies/vstar/MCTS.py:selection",
+                        "function:code/src/policies/vstar/MCTS.py:execute_repeat_question_action",
+                        "function:code/src/policies/vstar/MCTS.py:execute_zoom_out_action",
+                        "function:code/src/policies/vstar/MCTS.py:expansion",
+                        "function:code/src/policies/vstar/MCTS.py:simulation",
+                        "function:code/src/policies/vstar/MCTS.py:backpropagation",
+                        "function:code/src/policies/vstar/MCTS.py:single_run",
+                        "function:code/src/policies/vstar/MCTS.py:get_final_answer",
+                        "function:code/src/policies/vstar/MCTS.py:serialize_tree",
+                        "function:code/src/policies/vstar/MCTS.py:_process",
+                        "function:code/src/policies/vstar/ours_mcts.py:get_final_answer",
+                        "function:code/src/policies/vstar/ours_mcts.py:justify",
+                        "function:code/src/policies/vstar/ours_mcts.py:convert_bbox_to_original_frame",
+                        "function:code/src/policies/vstar/visual_grounding.py:grounding",
+                        "function:code/src/policies/vstar/visual_grounding.py:iterative_segmentation_from_heatmap",
+                        "function:code/src/policies/vstar/visual_grounding.py:merge_overlapping_masks",
+                        "function:code/src/policies/vstar/visual_grounding.py:filter_points_by_mask",
+                        "function:code/src/policies/vstar/visual_grounding.py:filter_groups_by_mask",
+                        "function:code/src/policies/vstar/visual_grounding.py:calculate_iou",
+                        "function:code/src/policies/vstar/visual_grounding.py:get_bbox_from_mask_numpy",
+                        "function:code/src/policies/vstar/control_point_sam.py:filter_heatmap_and_find_centroids",
+                        "function:code/src/policies/vstar/control_point_sam.py:filter_heatmap_and_find_control_points",
+                        "function:code/src/policies/vstar/control_point_sam.py:cluster_centroids_for_prompts",
+                        "function:code/src/policies/vstar/control_point_sam.py:sample_points_from_polygon",
+                        "function:code/src/policies/vstar/control_point_sam.py:get_mask_and_label_from_sam",
+                        "function:code/src/policies/vstar/control_point_sam.py:iterative_object_extraction",
+                        "function:code/src/policies/vstar/control_point_sam.py:visualize_highlighted_regions",
+                        "function:code/src/policies/vstar/client.py:get_heatmap",
+                        "function:code/src/policies/vstar/client.py:get_mask_point"
+                    ]
+    },
+    {
+        "id":  "layer:runtime-and-vlm-interface",
+        "name":  "Runtime \u0026 VLM Interface",
+        "description":  "Wraps the Qwen Vision-Language Model backend with async generation, image preprocessing, and concurrency control. Also provides shared utility functions for OpenAI client management, list chunking, and image loading.",
+        "nodeIds":  [
+                        "file:code/src/qwen_runtime.py",
+                        "file:code/src/utils.py",
+                        "class:code/src/qwen_runtime.py:QwenVLRuntime",
+                        "function:code/src/qwen_runtime.py:_to_dtype",
+                        "function:code/src/qwen_runtime.py:_to_pil_image",
+                        "function:code/src/qwen_runtime.py:_to_pil_images",
+                        "function:code/src/qwen_runtime.py:_blocking_generate",
+                        "function:code/src/qwen_runtime.py:generate",
+                        "function:code/src/qwen_runtime.py:get_qwen_runtime",
+                        "function:code/src/utils.py:get_openai_clients_and_models",
+                        "function:code/src/utils.py:split_list",
+                        "function:code/src/utils.py:get_chunk",
+                        "function:code/src/utils.py:is_none",
+                        "function:code/src/utils.py:get_options",
+                        "function:code/src/utils.py:load_image_from_base64"
+                    ]
+    },
+    {
+        "id":  "layer:expert-services",
+        "name":  "Expert Services",
+        "description":  "FastAPI microservices providing specialized vision capabilities. Three independent services: BLIP for attention-based search, LangSAM for detection and segmentation, and SAM2 for point-prompt segmentation. Each includes request/response models, inference logic, and async endpoints.",
+        "nodeIds":  [
+                        "file:script:code/scripts/blip_server/start_server.sh",
+                        "file:script:code/scripts/blip_server/blip_service.py",
+                        "file:script:code/scripts/expert_server/start_server.sh",
+                        "file:script:code/scripts/expert_server/model_service.py",
+                        "file:script:code/scripts/sam2_server/start_server.sh",
+                        "file:script:code/scripts/sam2_server/sam2_service.py",
+                        "class:code/scripts/blip_server/blip_service.py:AttentionRequest",
+                        "function:code/scripts/blip_server/blip_service.py:resize_to_multiple",
+                        "function:code/scripts/blip_server/blip_service.py:genAttnMap",
+                        "function:code/scripts/blip_server/blip_service.py:compute_attention",
+                        "function:code/scripts/blip_server/blip_service.py:compute_full_attention",
+                        "function:code/scripts/blip_server/blip_service.py:filter_masks_api",
+                        "function:code/scripts/blip_server/blip_service.py:attention_map",
+                        "class:code/scripts/expert_server/model_service.py:ImageRequest",
+                        "class:code/scripts/expert_server/model_service.py:PredictionResponse",
+                        "class:code/scripts/expert_server/model_service.py:BatchProcessor",
+                        "function:code/scripts/expert_server/model_service.py:predict",
+                        "class:code/scripts/sam2_server/sam2_service.py:PointPromptReq",
+                        "class:code/scripts/sam2_server/sam2_service.py:PointPromptResp",
+                        "class:code/scripts/sam2_server/sam2_service.py:_Sam2Engine",
+                        "function:code/scripts/sam2_server/sam2_service.py:_b64_to_rgb_ndarray",
+                        "function:code/scripts/sam2_server/sam2_service.py:_ndarray_to_b64_dict",
+                        "function:code/scripts/sam2_server/sam2_service.py:point_predict"
+                    ]
+    }
+],
+  "tour": [
+    {
+        "order":  1,
+        "title":  "Project Overview and Vision",
+        "description":  "Understand DeepScan\u0027s core contribution: a training-free framework for visually grounded reasoning in LVLMs. Learn about the three-stage pipeline (Hierarchical Scanning, Refocusing, Evidence-Enhanced Reasoning) and the CVPR 2026 paper.",
+        "nodeIds":  [
+                        "document:README.md"
+                    ],
+        "languageLesson":  "Markdown documentation for research project communication and setup instructions"
+    },
+    {
+        "order":  2,
+        "title":  "System Architecture and Design",
+        "description":  "Explore the overall architecture of DeepScan including the paper-to-code mapping, runtime entry points, service architecture (BLIP, LangSAM, SAM2), and the three-environment design (lavis, langsam, deepscan).",
+        "nodeIds":  [
+                        "document:docs/architecture.md"
+                    ],
+        "languageLesson":  "Architectural documentation explaining service-oriented design with HTTP endpoints"
+    },
+    {
+        "order":  3,
+        "title":  "Environment and Dependency Configuration",
+        "description":  "Learn how DeepScan manages three isolated conda environments with specific dependencies. Each YAML file specifies packages for different expert services and the main LVLM runtime.",
+        "nodeIds":  [
+                        "config:deepscan.yml",
+                        "config:lavis.yml",
+                        "config:langsam.yml"
+                    ],
+        "languageLesson":  "YAML configuration for Python environment management with conda"
+    },
+    {
+        "order":  4,
+        "title":  "Experiment Flow and Batch Evaluation",
+        "description":  "Understand the complete experiment pipeline from shell scripts to batch processing. Learn how run.py handles dataset sharding, async sample creation, policy dispatch, and JSONL output generation.",
+        "nodeIds":  [
+                        "document:docs/experiment_flow.md"
+                    ],
+        "languageLesson":  "Detailed documentation of async execution patterns and data parallelism"
+    },
+    {
+        "order":  5,
+        "title":  "Batch Evaluation Entry Point",
+        "description":  "Explore the main batch runner script that loads question TSVs, instantiates policies dynamically, processes samples asynchronously, and writes predictions. Understand CLI arguments and data sharding logic.",
+        "nodeIds":  [
+                        "file:code/src/run.py"
+                    ],
+        "languageLesson":  "Python async/await patterns, argparse CLI design, and asyncio coroutine orchestration"
+    },
+    {
+        "order":  6,
+        "title":  "Single-Sample Inference Entry Point",
+        "description":  "Learn the single-sample debugging interface for testing one question at a time. Useful for understanding individual sample flow without batch processing overhead.",
+        "nodeIds":  [
+                        "file:code/src/run_single_sample.py"
+                    ],
+        "languageLesson":  "Alternative entry point design for testing and debugging"
+    },
+    {
+        "order":  7,
+        "title":  "Base Policy Abstraction and VLM Interface",
+        "description":  "Understand the QuestionSample base class that defines the policy interface, image preprocessing logic, async LVLM generation, and result formatting. This is the foundation for all reasoning strategies.",
+        "nodeIds":  [
+                        "file:code/src/policies/vstar/policy.py"
+                    ],
+        "languageLesson":  "Abstract base classes, image processing with PIL, async OpenAI API client usage"
+    },
+    {
+        "order":  8,
+        "title":  "Core Utilities and Helper Functions",
+        "description":  "Explore shared utilities for dataset loading, data sharding, client management, and common operations used across the pipeline. Understand OpenAI client load balancing across GPUs.",
+        "nodeIds":  [
+                        "file:code/src/utils.py"
+                    ],
+        "languageLesson":  "Utility functions, GPU-aware client balancing, data splitting algorithms"
+    },
+    {
+        "order":  9,
+        "title":  "VLM Runtime Wrapper for Qwen Models",
+        "description":  "Learn how Qwen vision-language models are loaded, configured, and wrapped for inference. Understand GPU device allocation, dtype handling, and multi-image input support.",
+        "nodeIds":  [
+                        "file:code/src/qwen_runtime.py"
+                    ],
+        "languageLesson":  "Transformers library model loading, device management, batch image processing"
+    },
+    {
+        "order":  10,
+        "title":  "Monte Carlo Tree Search (MCTS) Framework",
+        "description":  "Understand the MCTS algorithm implementation including node definitions, action spaces (repeat_question, zoom_out), reward calculation, and simulation mechanics. This is the core search strategy.",
+        "nodeIds":  [
+                        "file:code/src/policies/vstar/MCTS.py"
+                    ],
+        "languageLesson":  "MCTS algorithm, tree node structures, UCB-based action selection with PUCT constant"
+    },
+    {
+        "order":  11,
+        "title":  "DeepScan-Enhanced MCTS with Grounding",
+        "description":  "Explore the OursMCTSQuestionSample class that implements the complete DeepScan pipeline: hierarchical scanning for cue discovery, evidence justification, refocusing with MCTS, and ensemble evidence-enhanced reasoning.",
+        "nodeIds":  [
+                        "file:code/src/policies/vstar/ours_mcts.py"
+                    ],
+        "languageLesson":  "Policy-specific implementation extending base MCTS with visual grounding"
+    },
+    {
+        "order":  12,
+        "title":  "Visual Grounding and Heatmap Processing",
+        "description":  "Learn the hierarchical scanning stage: querying BLIP for attention heatmaps, filtering with Otsu thresholding, extracting connected components, and generating candidate evidence regions. Foundation of cue discovery.",
+        "nodeIds":  [
+                        "file:code/src/policies/vstar/visual_grounding.py"
+                    ],
+        "languageLesson":  "Image processing with OpenCV, heatmap filtering, connected component analysis"
+    },
+    {
+        "order":  13,
+        "title":  "Control Point Extraction and SAM2 Integration",
+        "description":  "Understand how SAM2 point-prompt segmentation is used to convert heatmap centroids into binary masks. Learn polygon point sampling and mask clustering for evidence generation.",
+        "nodeIds":  [
+                        "file:code/src/policies/vstar/control_point_sam.py"
+                    ],
+        "languageLesson":  "Mask processing with NumPy/OpenCV, DBSCAN clustering, binary mask operations"
+    },
+    {
+        "order":  14,
+        "title":  "HTTP Client for Expert Services",
+        "description":  "Explore how the main runtime communicates with three expert services: BLIP for heatmaps, LangSAM for object detection, and SAM2 for point-prompt segmentation. Understand request/response serialization.",
+        "nodeIds":  [
+                        "file:code/src/policies/vstar/client.py"
+                    ],
+        "languageLesson":  "HTTP requests library, base64 image encoding/decoding, numpy array serialization"
+    },
+    {
+        "order":  15,
+        "title":  "BLIP Search Expert Service",
+        "description":  "Learn the BLIP-ITM based search expert that computes patch-wise Grad-CAM attention maps. This service handles image blocks and returns heatmaps used for hierarchical scanning.",
+        "nodeIds":  [
+                        "file:code/scripts/blip_server/blip_service.py"
+                    ],
+        "languageLesson":  "FastAPI service design, LAVIS model integration, Grad-CAM computation"
+    },
+    {
+        "order":  16,
+        "title":  "LangSAM Visual Expert Service",
+        "description":  "Explore the visual expert service that performs text-conditioned object detection and segmentation using GroundingDINO and LangSAM. Used for localization tasks during MCTS refinement.",
+        "nodeIds":  [
+                        "file:code/scripts/expert_server/model_service.py"
+                    ],
+        "languageLesson":  "Batch processing with async queues, FastAPI request handling, mask serialization"
+    },
+    {
+        "order":  17,
+        "title":  "SAM2 Point-Prompt Segmentation Service",
+        "description":  "Understand the SAM2 inference service that converts point prompts into binary masks. Handles positive/negative point collections and returns masks used to generate evidence crops.",
+        "nodeIds":  [
+                        "file:code/scripts/sam2_server/sam2_service.py"
+                    ],
+        "languageLesson":  "SAM2 model loading and inference, base64 numpy serialization, point coordinate handling"
+    }
+]
+}

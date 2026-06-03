@@ -1,0 +1,121 @@
+[
+  {
+    "order": 1,
+    "title": "Project Overview and Vision",
+    "description": "Understand DeepScan's core contribution: a training-free framework for visually grounded reasoning in LVLMs. Learn about the three-stage pipeline (Hierarchical Scanning, Refocusing, Evidence-Enhanced Reasoning) and the CVPR 2026 paper.",
+    "nodeIds": ["document:README.md"],
+    "languageLesson": "Markdown documentation for research project communication and setup instructions"
+  },
+  {
+    "order": 2,
+    "title": "System Architecture and Design",
+    "description": "Explore the overall architecture of DeepScan including the paper-to-code mapping, runtime entry points, service architecture (BLIP, LangSAM, SAM2), and the three-environment design (lavis, langsam, deepscan).",
+    "nodeIds": ["document:docs/architecture.md"],
+    "languageLesson": "Architectural documentation explaining service-oriented design with HTTP endpoints"
+  },
+  {
+    "order": 3,
+    "title": "Environment and Dependency Configuration",
+    "description": "Learn how DeepScan manages three isolated conda environments with specific dependencies. Each YAML file specifies packages for different expert services and the main LVLM runtime.",
+    "nodeIds": ["config:deepscan.yml", "config:lavis.yml", "config:langsam.yml"],
+    "languageLesson": "YAML configuration for Python environment management with conda"
+  },
+  {
+    "order": 4,
+    "title": "Experiment Flow and Batch Evaluation",
+    "description": "Understand the complete experiment pipeline from shell scripts to batch processing. Learn how run.py handles dataset sharding, async sample creation, policy dispatch, and JSONL output generation.",
+    "nodeIds": ["document:docs/experiment_flow.md"],
+    "languageLesson": "Detailed documentation of async execution patterns and data parallelism"
+  },
+  {
+    "order": 5,
+    "title": "Batch Evaluation Entry Point",
+    "description": "Explore the main batch runner script that loads question TSVs, instantiates policies dynamically, processes samples asynchronously, and writes predictions. Understand CLI arguments and data sharding logic.",
+    "nodeIds": ["file:code/src/run.py"],
+    "languageLesson": "Python async/await patterns, argparse CLI design, and asyncio coroutine orchestration"
+  },
+  {
+    "order": 6,
+    "title": "Single-Sample Inference Entry Point",
+    "description": "Learn the single-sample debugging interface for testing one question at a time. Useful for understanding individual sample flow without batch processing overhead.",
+    "nodeIds": ["file:code/src/run_single_sample.py"],
+    "languageLesson": "Alternative entry point design for testing and debugging"
+  },
+  {
+    "order": 7,
+    "title": "Base Policy Abstraction and VLM Interface",
+    "description": "Understand the QuestionSample base class that defines the policy interface, image preprocessing logic, async LVLM generation, and result formatting. This is the foundation for all reasoning strategies.",
+    "nodeIds": ["file:code/src/policies/vstar/policy.py"],
+    "languageLesson": "Abstract base classes, image processing with PIL, async OpenAI API client usage"
+  },
+  {
+    "order": 8,
+    "title": "Core Utilities and Helper Functions",
+    "description": "Explore shared utilities for dataset loading, data sharding, client management, and common operations used across the pipeline. Understand OpenAI client load balancing across GPUs.",
+    "nodeIds": ["file:code/src/utils.py"],
+    "languageLesson": "Utility functions, GPU-aware client balancing, data splitting algorithms"
+  },
+  {
+    "order": 9,
+    "title": "VLM Runtime Wrapper for Qwen Models",
+    "description": "Learn how Qwen vision-language models are loaded, configured, and wrapped for inference. Understand GPU device allocation, dtype handling, and multi-image input support.",
+    "nodeIds": ["file:code/src/qwen_runtime.py"],
+    "languageLesson": "Transformers library model loading, device management, batch image processing"
+  },
+  {
+    "order": 10,
+    "title": "Monte Carlo Tree Search (MCTS) Framework",
+    "description": "Understand the MCTS algorithm implementation including node definitions, action spaces (repeat_question, zoom_out), reward calculation, and simulation mechanics. This is the core search strategy.",
+    "nodeIds": ["file:code/src/policies/vstar/MCTS.py"],
+    "languageLesson": "MCTS algorithm, tree node structures, UCB-based action selection with PUCT constant"
+  },
+  {
+    "order": 11,
+    "title": "DeepScan-Enhanced MCTS with Grounding",
+    "description": "Explore the OursMCTSQuestionSample class that implements the complete DeepScan pipeline: hierarchical scanning for cue discovery, evidence justification, refocusing with MCTS, and ensemble evidence-enhanced reasoning.",
+    "nodeIds": ["file:code/src/policies/vstar/ours_mcts.py"],
+    "languageLesson": "Policy-specific implementation extending base MCTS with visual grounding"
+  },
+  {
+    "order": 12,
+    "title": "Visual Grounding and Heatmap Processing",
+    "description": "Learn the hierarchical scanning stage: querying BLIP for attention heatmaps, filtering with Otsu thresholding, extracting connected components, and generating candidate evidence regions. Foundation of cue discovery.",
+    "nodeIds": ["file:code/src/policies/vstar/visual_grounding.py"],
+    "languageLesson": "Image processing with OpenCV, heatmap filtering, connected component analysis"
+  },
+  {
+    "order": 13,
+    "title": "Control Point Extraction and SAM2 Integration",
+    "description": "Understand how SAM2 point-prompt segmentation is used to convert heatmap centroids into binary masks. Learn polygon point sampling and mask clustering for evidence generation.",
+    "nodeIds": ["file:code/src/policies/vstar/control_point_sam.py"],
+    "languageLesson": "Mask processing with NumPy/OpenCV, DBSCAN clustering, binary mask operations"
+  },
+  {
+    "order": 14,
+    "title": "HTTP Client for Expert Services",
+    "description": "Explore how the main runtime communicates with three expert services: BLIP for heatmaps, LangSAM for object detection, and SAM2 for point-prompt segmentation. Understand request/response serialization.",
+    "nodeIds": ["file:code/src/policies/vstar/client.py"],
+    "languageLesson": "HTTP requests library, base64 image encoding/decoding, numpy array serialization"
+  },
+  {
+    "order": 15,
+    "title": "BLIP Search Expert Service",
+    "description": "Learn the BLIP-ITM based search expert that computes patch-wise Grad-CAM attention maps. This service handles image blocks and returns heatmaps used for hierarchical scanning.",
+    "nodeIds": ["file:code/scripts/blip_server/blip_service.py"],
+    "languageLesson": "FastAPI service design, LAVIS model integration, Grad-CAM computation"
+  },
+  {
+    "order": 16,
+    "title": "LangSAM Visual Expert Service",
+    "description": "Explore the visual expert service that performs text-conditioned object detection and segmentation using GroundingDINO and LangSAM. Used for localization tasks during MCTS refinement.",
+    "nodeIds": ["file:code/scripts/expert_server/model_service.py"],
+    "languageLesson": "Batch processing with async queues, FastAPI request handling, mask serialization"
+  },
+  {
+    "order": 17,
+    "title": "SAM2 Point-Prompt Segmentation Service",
+    "description": "Understand the SAM2 inference service that converts point prompts into binary masks. Handles positive/negative point collections and returns masks used to generate evidence crops.",
+    "nodeIds": ["file:code/scripts/sam2_server/sam2_service.py"],
+    "languageLesson": "SAM2 model loading and inference, base64 numpy serialization, point coordinate handling"
+  }
+]

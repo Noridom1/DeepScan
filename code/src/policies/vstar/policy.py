@@ -34,8 +34,8 @@ class QuestionSample(ABC):
         
     
     async def generate(self, prompt, image, max_tokens=1024):
-        client = self.clients[self.current_client_idx]
-        model = self.models[self.current_client_idx]
+        client: AsyncOpenAI = self.clients[self.current_client_idx]
+        model: str = self.models[self.current_client_idx]
 
         self.current_client_idx = (self.current_client_idx + 1) % len(self.clients)
 
