@@ -1,0 +1,165 @@
+{
+  "analysis": {
+    "totalNodes": 106,
+    "totalEdges": 143,
+    "nodeTypes": {
+      "file": 15,
+      "function": 62,
+      "class": 12,
+      "config": 4,
+      "document": 5,
+      "script": 4,
+      "data": 4
+    },
+    "edgeTypes": {
+      "contains": 59,
+      "calls": 36,
+      "documents": 19,
+      "related": 12,
+      "imports": 13,
+      "configures": 4
+    },
+    "issues": [
+      {
+        "severity": "critical",
+        "type": "invalid-node-type",
+        "description": "4 nodes have type='script' which is not a valid node type. These should be remapped to type='service' or type='file' depending on context",
+        "affectedNodes": [
+          "file:script:code/scripts/blip_server/start_server.sh",
+          "file:script:code/scripts/expert_server/start_server.sh",
+          "file:script:code/scripts/sam2_server/start_server.sh",
+          "file:script:code/scripts/vstar/stream_vstar_qwen.sh"
+        ],
+        "suggestion": "Remap type='script' to type='service' for server launcher scripts (blip/expert/sam2) and type='file' for utility scripts. Update node IDs to remove 'script:' prefix and use 'file:' prefix instead"
+      },
+      {
+        "severity": "warning",
+        "type": "invalid-node-type",
+        "description": "4 nodes have type='data' which is not standard. These should be remapped to type='resource' or type='document' depending on whether they're figure assets",
+        "affectedNodes": [
+          "file:data:figs/model.pdf",
+          "file:data:figs/sample.pdf",
+          "file:data:figs/teaser.pdf",
+          "file:data:figs/teaser.png"
+        ],
+        "suggestion": "Remap type='data' to type='resource' for all figure files. Update node IDs to use 'resource:' prefix instead of 'data:'"
+      },
+      {
+        "severity": "info",
+        "type": "orphan-nodes",
+        "description": "2 function nodes have no incoming or outgoing edges and are isolated from the graph",
+        "affectedNodes": [
+          "function:code/src/policies/vstar/MCTS.py:serialize_tree",
+          "function:code/src/policies/vstar/ours_mcts.py:convert_bbox_to_original_frame"
+        ],
+        "suggestion": "These functions exist but are not called by any other functions in the analyzed code. Verify they are actually used in the codebase or consider if they should be called by other functions. Add edges if they are called but not detected"
+      },
+      {
+        "severity": "warning",
+        "type": "missing-cross-batch-edges",
+        "description": "Service Python files (blip_service.py, model_service.py, sam2_service.py) do not have edges to their corresponding starter scripts from batch 1. These should be connected",
+        "affectedNodes": [
+          "file:code/scripts/blip_server/blip_service.py",
+          "file:code/scripts/expert_server/model_service.py",
+          "file:code/scripts/sam2_server/sam2_service.py"
+        ],
+        "suggestion": "Add edges from service files to their starter scripts with type='launched_by'. This shows that each service module is started via its corresponding script"
+      },
+      {
+        "severity": "info",
+        "type": "tag-consistency",
+        "description": "Script nodes with type='script' have conflicting tags. Script nodes tagged as 'service' should have their type changed to 'service' instead of 'script'",
+        "affectedNodes": [
+          "file:script:code/scripts/blip_server/start_server.sh",
+          "file:script:code/scripts/expert_server/start_server.sh",
+          "file:script:code/scripts/sam2_server/start_server.sh"
+        ],
+        "suggestion": "Remap type to 'service' to align with the 'service' tag already present on these nodes"
+      }
+    ],
+    "completeness": {
+      "filesCovered": "15/15",
+      "pythonCodeFilesCovered": "15 (all Python files from batch 2)",
+      "nonCodeFilesCovered": "18 (17 from batch 1 + 1 config)",
+      "orphanNodes": [
+        "function:code/src/policies/vstar/MCTS.py:serialize_tree",
+        "function:code/src/policies/vstar/ours_mcts.py:convert_bbox_to_original_frame"
+      ],
+      "missingEdges": [
+        {
+          "description": "Service Python modules to start scripts: blip_service.py <-> start_server.sh, model_service.py <-> start_server.sh, sam2_service.py <-> start_server.sh",
+          "suggestion": "Add edges with type='launched_by' from each Python service file to its corresponding shell script"
+        },
+        {
+          "description": "Visual grounding integration not fully represented: visual_grounding.py should have stronger edges to client.py functions beyond just imports",
+          "suggestion": "Add call edges from grounding() function to get_heatmap() and get_mask_point() to show the actual service calls"
+        },
+        {
+          "description": "ours_mcts.py integration with control_point_sam: the visual_grounding.py module is imported but not deeply integrated",
+          "suggestion": "Verify and add call edges showing how ours_mcts.py uses visual grounding features"
+        }
+      ]
+    },
+    "semanticCoherence": {
+      "policyInterconnection": "strong",
+      "policyInterconnectionNotes": "Policy classes are well-connected: QuestionSample (base) -> MCTSQuestionSample -> OursMCTSQuestionSample (hierarchy visible through imports and 'related' edges). MCTS.py properly imports policy.py",
+      "serviceArchitecture": "good-with-gaps",
+      "serviceArchitectureNotes": "Three FastAPI services identified and tagged correctly (blip_service.py, model_service.py, sam2_service.py). They are documented and configured via conda yml files. However, direct connections between Python service modules and their launcher scripts are missing",
+      "documentationAlignment": "excellent",
+      "documentationAlignmentNotes": "Documentation nodes properly link to services and configs. README -> architecture -> experiment_flow chain is well-established. Figures properly referenced",
+      "tagAccuracy": "good",
+      "tagAccuracyNotes": "Services tagged with 'fastapi', 'async', 'server' tags are appropriate. Policy files tagged with 'policy', 'mcts', 'async'. Config files tagged with environment, conda, python version. Minor issue: 'script' type tags appear on nodes that should be type='service' or type='file'"
+    },
+    "edgePatternAnalysis": {
+      "containsEdges": {
+        "count": 59,
+        "status": "correct",
+        "note": "Files contain their functions and classes - semantically appropriate"
+      },
+      "callsEdges": {
+        "count": 36,
+        "status": "good",
+        "note": "Function-to-function calls well represented. MCTS phases call each other, utility functions properly chained"
+      },
+      "importsEdges": {
+        "count": 13,
+        "status": "good",
+        "note": "Inter-module imports represented. Policy modules import base policy, ours_mcts imports MCTS"
+      },
+      "documentsEdges": {
+        "count": 19,
+        "status": "good",
+        "note": "Documentation linking to services and configs is comprehensive"
+      },
+      "relatedEdges": {
+        "count": 12,
+        "status": "good",
+        "note": "Used appropriately for loose coupling between docs and configs"
+      },
+      "configuresEdges": {
+        "count": 4,
+        "status": "adequate",
+        "note": "Config yml files properly connected to their target scripts/services"
+      }
+    },
+    "strengths": [
+      "Complete coverage of all 15 Python code files and essential non-code files",
+      "Well-structured function decomposition - 62 functions properly extracted and connected",
+      "Strong policy class hierarchy representation with clear inheritance patterns",
+      "Excellent documentation-to-implementation linking",
+      "Service architecture properly identified and tagged",
+      "Cross-batch merging successfully unified config/docs with Python code",
+      "Proper function call chains (MCTS phases, utility functions, orchestration)",
+      "Clear separation of concerns: services, policies, utilities, documentation"
+    ],
+    "weaknesses": [
+      "4 nodes still have invalid type 'script' instead of 'service' or 'file'",
+      "4 nodes have non-standard type 'data' instead of 'resource'",
+      "Missing direct edges between service Python modules and their launcher scripts",
+      "2 orphan functions with no incoming/outgoing edges",
+      "Service files do not reference each other (appropriate for independence, but no 'orchestrates' edges showing how run.py/run_single_sample.py call them)",
+      "Limited cross-service dependency visibility in the graph"
+    ],
+    "summary": "The assembled graph demonstrates good structural coherence with 106 nodes and 143 edges. All Python files and critical non-code files are represented. Policy classes are well-interconnected, and documentation properly links to implementation. However, there are 8 nodes with invalid types ('script' and 'data') that should be remapped to standard types ('service', 'file', 'resource'). Additionally, missing edges between service Python modules and their launcher scripts reduce visibility of the deployment structure. The graph successfully merges batch 1 (config/docs) with batch 2 (code), though 2 utility functions remain orphaned."
+  }
+}

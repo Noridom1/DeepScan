@@ -1,0 +1,490 @@
+{
+  "schemaVersion": 1,
+  "algorithm": "louvain",
+  "totalFiles": 33,
+  "totalBatches": 2,
+  "exportsByPath": {
+    "code\\scripts\\blip_server\\blip_service.py": [
+      "patched_init_tokenizer",
+      "AttentionRequest",
+      "resize_to_multiple",
+      "genAttnMap",
+      "compute_attention",
+      "compute_full_attention",
+      "filter_masks_api",
+      "attention_map"
+    ],
+    "code\\scripts\\expert_server\\model_service.py": [
+      "ImageRequest",
+      "PredictionResponse",
+      "BatchProcessor",
+      "lifespan",
+      "predict"
+    ],
+    "code\\scripts\\sam2_server\\sam2_service.py": [
+      "PointPromptReq",
+      "PointPromptResp",
+      "_Sam2Engine",
+      "_b64_to_rgb_ndarray",
+      "_ndarray_to_b64_dict",
+      "lifespan",
+      "point_predict"
+    ],
+    "code\\src\\policies\\__init__.py": [],
+    "code\\src\\policies\\vstar\\__init__.py": [],
+    "code\\src\\policies\\vstar\\client.py": [
+      "get_heatmap",
+      "get_mask_point"
+    ],
+    "code\\src\\policies\\vstar\\control_point_sam.py": [
+      "sample_points_from_polygon",
+      "filter_heatmap_and_find_centroids",
+      "filter_heatmap_and_find_control_points",
+      "cluster_centroids_for_prompts",
+      "get_mask_and_label_from_sam",
+      "iterative_object_extraction",
+      "visualize_highlighted_regions"
+    ],
+    "code\\src\\policies\\vstar\\MCTS.py": [
+      "_short_trace_text",
+      "MCTSNode",
+      "MCTSQuestionSample"
+    ],
+    "code\\src\\policies\\vstar\\ours_mcts.py": [
+      "OursMCTSQuestionSample"
+    ],
+    "code\\src\\policies\\vstar\\policy.py": [
+      "QuestionSample"
+    ],
+    "code\\src\\policies\\vstar\\visual_grounding.py": [
+      "filter_points_by_mask",
+      "filter_groups_by_mask",
+      "calculate_iou",
+      "get_bbox_from_mask_numpy",
+      "merge_overlapping_masks",
+      "iterative_segmentation_from_heatmap",
+      "grounding"
+    ],
+    "code\\src\\qwen_runtime.py": [
+      "_to_dtype",
+      "QwenVLRuntime",
+      "get_qwen_runtime"
+    ],
+    "code\\src\\run.py": [
+      "create_sample",
+      "process_sample",
+      "eval_model"
+    ],
+    "code\\src\\run_single_sample.py": [
+      "_select_row",
+      "_ensure_image_base64",
+      "run_single_sample"
+    ],
+    "code\\src\\utils.py": [
+      "get_openai_clients_and_models",
+      "split_list",
+      "get_chunk",
+      "is_none",
+      "get_options",
+      "load_image_from_base64"
+    ]
+  },
+  "batches": [
+    {
+      "batchIndex": 1,
+      "files": [
+        {
+          "path": ".claude\\settings.local.json",
+          "language": "json",
+          "sizeLines": 21,
+          "fileCategory": "config"
+        },
+        {
+          "path": "LICENSE.txt",
+          "language": "text",
+          "sizeLines": 0,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "README.md",
+          "language": "markdown",
+          "sizeLines": 311,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "code\\scripts\\blip_server\\start_server.sh",
+          "language": "bash",
+          "sizeLines": 18,
+          "fileCategory": "script"
+        },
+        {
+          "path": "code\\scripts\\expert_server\\start_server.sh",
+          "language": "bash",
+          "sizeLines": 18,
+          "fileCategory": "script"
+        },
+        {
+          "path": "code\\scripts\\sam2_server\\start_server.sh",
+          "language": "bash",
+          "sizeLines": 18,
+          "fileCategory": "script"
+        },
+        {
+          "path": "code\\scripts\\vstar\\stream_vstar_qwen.sh",
+          "language": "bash",
+          "sizeLines": 40,
+          "fileCategory": "script"
+        },
+        {
+          "path": "deepscan.yml",
+          "language": "yaml",
+          "sizeLines": 228,
+          "fileCategory": "config"
+        },
+        {
+          "path": "docs\\DeepScan-Paper.pdf",
+          "language": "pdf",
+          "sizeLines": 0,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "docs\\architecture.md",
+          "language": "markdown",
+          "sizeLines": 309,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "docs\\experiment_flow.md",
+          "language": "markdown",
+          "sizeLines": 284,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "figs\\model.pdf",
+          "language": "pdf",
+          "sizeLines": 0,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "figs\\sample.pdf",
+          "language": "pdf",
+          "sizeLines": 0,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "figs\\teaser.pdf",
+          "language": "pdf",
+          "sizeLines": 0,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "figs\\teaser.png",
+          "language": "image",
+          "sizeLines": 0,
+          "fileCategory": "data"
+        },
+        {
+          "path": "figs\\vstar.pdf",
+          "language": "pdf",
+          "sizeLines": 0,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "langsam.yml",
+          "language": "yaml",
+          "sizeLines": 135,
+          "fileCategory": "config"
+        },
+        {
+          "path": "lavis.yml",
+          "language": "yaml",
+          "sizeLines": 196,
+          "fileCategory": "config"
+        }
+      ],
+      "batchImportData": {
+        ".claude\\settings.local.json": [],
+        "LICENSE.txt": [],
+        "README.md": [],
+        "code\\scripts\\blip_server\\start_server.sh": [],
+        "code\\scripts\\expert_server\\start_server.sh": [],
+        "code\\scripts\\sam2_server\\start_server.sh": [],
+        "code\\scripts\\vstar\\stream_vstar_qwen.sh": [],
+        "deepscan.yml": [],
+        "docs\\DeepScan-Paper.pdf": [],
+        "docs\\architecture.md": [],
+        "docs\\experiment_flow.md": [],
+        "figs\\model.pdf": [],
+        "figs\\sample.pdf": [],
+        "figs\\teaser.pdf": [],
+        "figs\\teaser.png": [],
+        "figs\\vstar.pdf": [],
+        "langsam.yml": [],
+        "lavis.yml": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 2,
+      "files": [
+        {
+          "path": "code\\scripts\\blip_server\\blip_service.py",
+          "language": "python",
+          "sizeLines": 208,
+          "fileCategory": "code"
+        },
+        {
+          "path": "code\\scripts\\expert_server\\model_service.py",
+          "language": "python",
+          "sizeLines": 172,
+          "fileCategory": "code"
+        },
+        {
+          "path": "code\\scripts\\sam2_server\\sam2_service.py",
+          "language": "python",
+          "sizeLines": 143,
+          "fileCategory": "code"
+        },
+        {
+          "path": "code\\src\\policies\\__init__.py",
+          "language": "python",
+          "sizeLines": 16,
+          "fileCategory": "code"
+        },
+        {
+          "path": "code\\src\\policies\\vstar\\__init__.py",
+          "language": "python",
+          "sizeLines": 23,
+          "fileCategory": "code"
+        },
+        {
+          "path": "code\\src\\policies\\vstar\\client.py",
+          "language": "python",
+          "sizeLines": 60,
+          "fileCategory": "code"
+        },
+        {
+          "path": "code\\src\\policies\\vstar\\control_point_sam.py",
+          "language": "python",
+          "sizeLines": 204,
+          "fileCategory": "code"
+        },
+        {
+          "path": "code\\src\\policies\\vstar\\MCTS.py",
+          "language": "python",
+          "sizeLines": 499,
+          "fileCategory": "code"
+        },
+        {
+          "path": "code\\src\\policies\\vstar\\ours_mcts.py",
+          "language": "python",
+          "sizeLines": 148,
+          "fileCategory": "code"
+        },
+        {
+          "path": "code\\src\\policies\\vstar\\policy.py",
+          "language": "python",
+          "sizeLines": 108,
+          "fileCategory": "code"
+        },
+        {
+          "path": "code\\src\\policies\\vstar\\visual_grounding.py",
+          "language": "python",
+          "sizeLines": 161,
+          "fileCategory": "code"
+        },
+        {
+          "path": "code\\src\\qwen_runtime.py",
+          "language": "python",
+          "sizeLines": 218,
+          "fileCategory": "code"
+        },
+        {
+          "path": "code\\src\\run_single_sample.py",
+          "language": "python",
+          "sizeLines": 107,
+          "fileCategory": "code"
+        },
+        {
+          "path": "code\\src\\run.py",
+          "language": "python",
+          "sizeLines": 91,
+          "fileCategory": "code"
+        },
+        {
+          "path": "code\\src\\utils.py",
+          "language": "python",
+          "sizeLines": 58,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "code\\scripts\\blip_server\\blip_service.py": [
+          "torch",
+          "transformers",
+          "lavis.models.blip_models.blip",
+          "io",
+          "numpy",
+          "PIL",
+          "torchvision",
+          "lavis.common.gradcam",
+          "fastapi",
+          "pydantic",
+          "lavis.models",
+          "lavis.models.blip_models.blip_image_text_matching"
+        ],
+        "code\\scripts\\expert_server\\model_service.py": [
+          "fastapi",
+          "pydantic",
+          "typing",
+          "uvicorn",
+          "asyncio",
+          "PIL",
+          "io",
+          "base64",
+          "numpy",
+          "lang_sam",
+          "torch",
+          "time",
+          "collections",
+          "argparse",
+          "logging",
+          "contextlib",
+          "os",
+          "datetime"
+        ],
+        "code\\scripts\\sam2_server\\sam2_service.py": [
+          "__future__",
+          "argparse",
+          "asyncio",
+          "base64",
+          "logging",
+          "contextlib",
+          "pathlib",
+          "typing",
+          "os",
+          "cv2",
+          "numpy",
+          "torch",
+          "uvicorn",
+          "fastapi",
+          "pydantic",
+          "sam2.build_sam",
+          "sam2.sam2_image_predictor"
+        ],
+        "code\\src\\policies\\__init__.py": [
+          ".vstar"
+        ],
+        "code\\src\\policies\\vstar\\__init__.py": [
+          "os",
+          "inspect",
+          ".policy"
+        ],
+        "code\\src\\policies\\vstar\\client.py": [
+          "base64",
+          "numpy",
+          "PIL",
+          "typing"
+        ],
+        "code\\src\\policies\\vstar\\control_point_sam.py": [
+          "cv2",
+          "numpy",
+          "PIL",
+          "matplotlib.pyplot",
+          "typing",
+          "sklearn.cluster"
+        ],
+        "code\\src\\policies\\vstar\\MCTS.py": [
+          ".policy",
+          "utils",
+          "pathlib",
+          "shortuuid",
+          "base64",
+          "io",
+          "PIL",
+          "numpy",
+          "random",
+          "math",
+          "aiohttp",
+          "traceback",
+          "re",
+          "collections"
+        ],
+        "code\\src\\policies\\vstar\\ours_mcts.py": [
+          "base64",
+          "numpy",
+          "PIL",
+          "typing",
+          "pathlib",
+          ".MCTS",
+          ".client",
+          ".visual_grounding"
+        ],
+        "code\\src\\policies\\vstar\\policy.py": [
+          "abc",
+          "utils",
+          "qwen_runtime",
+          "shortuuid",
+          "base64",
+          "io",
+          "asyncio",
+          "PIL",
+          "openai",
+          "aiolimiter",
+          "traceback"
+        ],
+        "code\\src\\policies\\vstar\\visual_grounding.py": [
+          "base64",
+          "numpy",
+          "matplotlib.pyplot",
+          "PIL",
+          "typing",
+          ".client",
+          ".control_point_sam"
+        ],
+        "code\\src\\qwen_runtime.py": [
+          "os",
+          "io",
+          "base64",
+          "asyncio",
+          "typing",
+          "torch",
+          "PIL",
+          "transformers"
+        ],
+        "code\\src\\run_single_sample.py": [
+          "argparse",
+          "asyncio",
+          "json",
+          "os",
+          "pandas",
+          "utils",
+          "policies",
+          "debugpy"
+        ],
+        "code\\src\\run.py": [
+          "argparse",
+          "os",
+          "json",
+          "pandas",
+          "tqdm",
+          "asyncio",
+          "random",
+          "utils",
+          "policies",
+          "debugpy"
+        ],
+        "code\\src\\utils.py": [
+          "os",
+          "base64",
+          "io",
+          "math",
+          "torch",
+          "PIL",
+          "openai"
+        ]
+      },
+      "neighborMap": {}
+    }
+  ]
+}
