@@ -113,9 +113,10 @@ def merge_overlapping_masks(
 
 
 def iterative_segmentation_from_heatmap(
-    initial_points: List[Tuple], 
-    image_b64: str, 
-    sam_endpoint: str = "http://127.0.0.1:8202/sam2/point_predict"
+    initial_points: List[Tuple],
+    image_b64: str,
+    sam_endpoint: str = "http://127.0.0.1:8202/sam2/point_predict",
+    artifact_sink=None
 ) -> List[Dict[str, Any]]:
    
     found_objects = []
@@ -154,9 +155,10 @@ def iterative_segmentation_from_heatmap(
     return merged_objects
 
 
-def grounding(img: str, 
+def grounding(img: str,
               question: str,
-              BLOCK: int):
+              BLOCK: int,
+              artifact_sink=None):
 
     # resized_img, heatmap = get_heatmap(img, question, endpoint = "http://localhost:8100/attention_map", block=BLOCK)
     resized_img, heatmap = get_heatmap(
@@ -166,14 +168,55 @@ def grounding(img: str,
         block=BLOCK,
     )
     points, raw_binary, final_mask = filter_heatmap_and_find_centroids(heatmap)
-    found_objects = iterative_segmentation_from_heatmap(points, resized_img)
-    
+    found_objects = iterative_segmentation_from_heatmap(points, resized_img, artifact_sink=artifact_sink)
+
     pil_image = Image.open(io.BytesIO(base64.b64decode(resized_img)))
     resized_width, resized_height = pil_image.size
 
-    for obj in found_objects:
-        mask = obj["mask"] 
-        bbox = get_bbox_from_mask_numpy(mask) 
+    # Export hierarchical scanning artifacts
+    if artifact_sink:
+        from . import artifacts
+        stage_dir = artifacts.stage_dir(artifact_sink, "hierarchical-scanning")
+
+        # Save original and resized images
+        artifacts.save_base64_image(stage_dir / "00_original.png", img)
+        artifacts.save_base64_image(stage_dir / "01_resized_scan_image.png", resized_img)
+
+        # Save heatmap
+        artifacts.save_numpy_array(stage_dir / "02_attention_heatmap.npy", heatmap)
+
+        # Colorize and save heatmap
+        heatmap_normalized = (heatmap - heatmap.min()) / (heatmap.max() - heatmap.min() + 1e-8)
+        heatmap_colored = cv2.applyColorMap((heatmap_normalized * 255).astype(np.uint8), cv2.COLORMAP_JET)
+        heatmap_image = Image.fromarray(cv2.cvtColor(heatmap_colored, cv2.COLOR_BGR2RGB))
+        artifacts.save_pil_image(stage_dir / "02_attention_heatmap.png", heatmap_image)
+
+        # Save attention overlay
+        artifacts.save_heatmap_overlay(stage_dir / "03_attention_overlay.png", resized_img, heatmap)
+
+        # Save raw binary mask
+        raw_binary_image = Image.fromarray((raw_binary > 0).astype(np.uint8) * 255)
+        artifacts.save_pil_image(stage_dir / "04_raw_binary_mask.png", raw_binary_image)
+
+        # Save connected components
+        artifacts.save_components_overlay(
+            stage_dir / "05_connected_components.png",
+            resized_img,
+            final_mask,
+            points=points
+        )
+
+        # Save anchor points
+        artifacts.save_components_overlay(
+            stage_dir / "06_anchor_points.png",
+            resized_img,
+            final_mask,
+            points=points
+        )
+
+    for obj_idx, obj in enumerate(found_objects):
+        mask = obj["mask"]
+        bbox = get_bbox_from_mask_numpy(mask)
         x_min, y_min, x_max, y_max = bbox
         if x_min >= x_max or y_min >= y_max:
             continue
@@ -184,5 +227,34 @@ def grounding(img: str,
         cropped_img.save(buffered, format="PNG")
         cropped_img_base64 = base64.b64encode(buffered.getvalue()).decode()
         obj['crop_img'] = cropped_img_base64
+
+        # Export proposal artifacts
+        if artifact_sink:
+            from . import artifacts
+            stage_dir = artifacts.stage_dir(artifact_sink, "hierarchical-scanning/proposals")
+
+            # Save mask
+            mask_image = Image.fromarray((mask > 0).astype(np.uint8) * 255)
+            artifacts.save_pil_image(stage_dir / f"proposal_{obj_idx:02d}_mask.png", mask_image)
+
+            # Save overlay
+            artifacts.save_mask_overlay(
+                stage_dir / f"proposal_{obj_idx:02d}_overlay.png",
+                resized_img,
+                mask
+            )
+
+            # Save crop
+            artifacts.save_base64_image(stage_dir / f"proposal_{obj_idx:02d}_crop.png", cropped_img_base64)
+
+            # Save metadata
+            source_point = obj.get('source_point', None)
+            artifacts.save_json(stage_dir / f"proposal_{obj_idx:02d}.json", {
+                "proposal_index": obj_idx,
+                "bbox_resized_frame": bbox,
+                "source_point": source_point,
+                "mask_shape": mask.shape,
+                "crop_size": (cropped_img.width, cropped_img.height)
+            })
 
     return resized_img, resized_width, resized_height, found_objects

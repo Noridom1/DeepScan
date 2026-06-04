@@ -11,6 +11,7 @@ import math
 import aiohttp
 import traceback
 import re
+from . import artifacts
 
 
 def _short_trace_text(value, limit=300):
@@ -71,6 +72,7 @@ class MCTSQuestionSample(BaseQuestionSample):
         self.expert_ports = [2] # <----- Changed the port
         self.expert_ports = [port + 8000 for port in self.expert_ports]
         self.expert_base_url = "http://localhost:{}/predict"
+        self.artifact_step_idx = 0
         print(
             "[trace:mcts:init] "
             f"question_id={self.row.get('index')} image_size={self.image_width}x{self.image_height} "
@@ -397,6 +399,19 @@ class MCTSQuestionSample(BaseQuestionSample):
     
     async def get_final_answer(self):
         """Run MCTS to search for best answer"""
+        from . import artifacts
+
+        # Save initial state for refocusing
+        if artifacts.is_enabled(self):
+            stage_dir = artifacts.stage_dir(self, "refocusing")
+            artifacts.save_base64_image(stage_dir / "00_initial_view.png", self.initial_state['image'])
+            artifacts.save_json(stage_dir / "00_initial_view.json", {
+                "depth": self.initial_state['depth'],
+                "region_coords": self.initial_state['region_coords'],
+                "image_width": self.initial_state['image_width'],
+                "image_height": self.initial_state['image_height']
+            })
+
         for sim_idx in range(self.n_simulations):
             print(f"[trace:mcts:search] simulation {sim_idx + 1}/{self.n_simulations}")
             await self.single_run(self.initial_state)
@@ -431,24 +446,49 @@ class MCTSQuestionSample(BaseQuestionSample):
         for node_idx, node in enumerate(all_nodes):
             if "qwen3-vl" in model_name.lower():
                 answer = await self.generate_local(final_qs, node.state['image'])
+                reasoning_images = [node.state['image']]
             else:
                  # multi-scale evidence enhanced reasoning
                 if self.flag:
                     if node.state['image'] == self.initial_state['image']:
                         answer = await self.generate_local(final_qs, [node.state['image'], self.image])
+                        reasoning_images = [node.state['image'], self.image]
                     else:
-                        answer = await self.generate_local(final_qs, [node.state['image'], self.initial_state['image'], self.image])     
+                        answer = await self.generate_local(final_qs, [node.state['image'], self.initial_state['image'], self.image])
+                        reasoning_images = [node.state['image'], self.initial_state['image'], self.image]
                 else:
                     if node.state['image'] == self.image:
                         answer = await self.generate_local(final_qs, node.state['image'])
+                        reasoning_images = [node.state['image']]
                     else:
                         answer = await self.generate_local(final_qs, [node.state['image'], self.image])
+                        reasoning_images = [node.state['image'], self.image]
+
             print(
                 "[trace:mcts:answer] "
                 f"node={node_idx} depth={node.state['depth']} reward={node.leaf_reward:.4f} "
                 f"region={node.state.get('region_coords')} raw={_short_trace_text(answer)!r}"
             )
-                    
+
+            # Export reasoning artifacts
+            if artifacts.is_enabled(self):
+                stage_dir = artifacts.stage_dir(self, f"reasoning/node_{node_idx:02d}")
+                for img_idx, img_b64 in enumerate(reasoning_images):
+                    artifacts.save_base64_image(stage_dir / f"input_{img_idx:02d}.png", img_b64)
+                artifacts.save_text_file(stage_dir / "prompt.txt", final_qs)
+                artifacts.save_text_file(stage_dir / "response.txt", answer)
+                artifacts.save_json(stage_dir / "metadata.json", {
+                    "node_index": node_idx,
+                    "depth": node.state['depth'],
+                    "region_coords": node.state.get('region_coords'),
+                    "leaf_reward": node.leaf_reward,
+                    "valid_area_ratio": node.valid_area_ratio,
+                    "action_history": node.state.get('action_history', []),
+                    "model_name": model_name,
+                    "num_reasoning_images": len(reasoning_images),
+                    "raw_response": answer
+                })
+
             for letter in ['A', 'B', 'C', 'D']:
                 if letter in answer:
                     answers.append((letter, node.leaf_reward))  # Use leaf reward as weight
@@ -457,14 +497,21 @@ class MCTSQuestionSample(BaseQuestionSample):
                 answers.append(('A', node.leaf_reward))  # If no valid option found, default to A with leaf reward
 
         best_node = max(all_nodes, key=lambda x: (x.leaf_reward, all_nodes.index(x)))
-        
+
         if self.use_ensemble:
             from collections import defaultdict
             vote_result = defaultdict(float)
             for answer, weight in answers:
                 vote_result[answer] += weight
             print(f"[trace:mcts:vote] weighted_votes={dict(vote_result)} answers={answers}")
-                
+
+            if artifacts.is_enabled(self):
+                stage_dir = artifacts.stage_dir(self, "reasoning")
+                artifacts.save_json(stage_dir / "weighted_votes.json", {
+                    "votes": dict(vote_result),
+                    "all_answers": answers
+                })
+
             if all(weight == 0 for weight in vote_result.values()):
                 answer = await self.generate_local(final_qs, self.image)
                 print(f"[trace:mcts:vote] fallback_raw={_short_trace_text(answer)!r}")
@@ -478,12 +525,27 @@ class MCTSQuestionSample(BaseQuestionSample):
                 final_answer = max(vote_result, key=vote_result.get)
         else:
             final_answer = max(answers, key=lambda x: x[1])[0]
+
         print(
             "[trace:mcts:final] "
             f"final_answer={final_answer!r} best_reward={best_node.leaf_reward:.4f} "
             f"best_region={best_node.state.get('region_coords')}"
         )
-        
+
+        # Export final answer artifacts
+        if artifacts.is_enabled(self):
+            stage_dir = artifacts.stage_dir(self, "reasoning")
+            artifacts.save_base64_image(stage_dir / "best_node.png", best_node.state['image'])
+            artifacts.save_text_file(stage_dir / "final_prompt.txt", final_qs)
+            artifacts.save_json(stage_dir / "final_answer.json", {
+                "final_answer": final_answer,
+                "best_node_index": all_nodes.index(best_node),
+                "best_node_reward": best_node.leaf_reward,
+                "best_node_region": best_node.state.get('region_coords'),
+                "total_nodes_explored": len(all_nodes),
+                "use_ensemble": self.use_ensemble
+            })
+
         return final_answer, final_qs, answers[-1][0], best_node.state['image'], best_node, self.root
 
     

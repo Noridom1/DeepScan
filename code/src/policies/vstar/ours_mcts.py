@@ -6,6 +6,7 @@ from pathlib import Path
 from .MCTS import MCTSQuestionSample, MCTSNode
 from .client import get_heatmap
 from .visual_grounding import grounding
+from . import artifacts
 
 
 class OursMCTSQuestionSample(MCTSQuestionSample):
@@ -18,9 +19,9 @@ class OursMCTSQuestionSample(MCTSQuestionSample):
                     f"question={self.row.get('question')!r}"
                 )
                 if self.category == 'relative_position':
-                    resized_img, resized_width, resized_height, objects_1 = grounding(self.image, self.row['question'], BLOCK=768)
+                    resized_img, resized_width, resized_height, objects_1 = grounding(self.image, self.row['question'], BLOCK=768, artifact_sink=self)
                 else:
-                    resized_img, resized_width, resized_height, objects_1 = grounding(self.image, self.row['question'], BLOCK=640)
+                    resized_img, resized_width, resized_height, objects_1 = grounding(self.image, self.row['question'], BLOCK=640, artifact_sink=self)
                 print(
                     "[trace:ours:grounding] "
                     f"resized={resized_width}x{resized_height} proposals={len(objects_1)} "
@@ -30,7 +31,16 @@ class OursMCTSQuestionSample(MCTSQuestionSample):
                 flag, union_bbox = await self.justify(objects_1)
                 self.flag = flag
                 print(f"[trace:ours:justify] flag={flag} union_bbox={union_bbox}")
-                if flag:      
+
+                if artifacts.is_enabled(self):
+                    stage_dir = artifacts.stage_dir(self, "hierarchical-scanning")
+                    artifacts.save_json(stage_dir / "confirmed_union_resized.json", {
+                        "flag": flag,
+                        "union_bbox_resized": union_bbox,
+                        "confirmed_count": len([obj for obj in objects_1 if obj.get('bbox')])
+                    })
+
+                if flag:
                     bbox_org  = self.convert_bbox_to_original_frame((0, 0, self.image_width, self.image_height), resized_width, resized_height, union_bbox)
                     print(f"[trace:ours:justify] original_frame_bbox={bbox_org}")
                     img_bytes = base64.b64decode(self.image)
@@ -38,7 +48,18 @@ class OursMCTSQuestionSample(MCTSQuestionSample):
                     buffered = io.BytesIO()
                     groud_img.save(buffered, format="PNG")
                     groud_img_b64 = base64.b64encode(buffered.getvalue()).decode()
-                    
+
+                    if artifacts.is_enabled(self):
+                        stage_dir = artifacts.stage_dir(self, "hierarchical-scanning")
+                        artifacts.save_json(stage_dir / "confirmed_union_original.json", {
+                            "flag": flag,
+                            "union_bbox_original": bbox_org,
+                            "original_image_size": (self.image_width, self.image_height)
+                        })
+                        artifacts.save_base64_image(stage_dir / "07_confirmed_union_original.png", self.image)
+                        artifacts.save_bbox_overlay(stage_dir / "07_confirmed_union_original_bbox.png", self.image, [bbox_org])
+                        artifacts.save_base64_image(stage_dir / "08_initial_refocus_view.png", groud_img_b64)
+
                     # update initial state
                     self.initial_state = {
                         'depth': 0,
@@ -49,8 +70,16 @@ class OursMCTSQuestionSample(MCTSQuestionSample):
                         'image_height': self.image_height,
                         'region_coords': bbox_org
                     }
-                    
+
                 else:
+                    if artifacts.is_enabled(self):
+                        stage_dir = artifacts.stage_dir(self, "hierarchical-scanning")
+                        artifacts.save_json(stage_dir / "confirmed_union_original.json", {
+                            "flag": flag,
+                            "message": "No proposals accepted, using original image"
+                        })
+                        artifacts.save_base64_image(stage_dir / "08_initial_refocus_view.png", self.image)
+
                     self.initial_state = {
                         'depth': 0,
                         'image': self.image,
@@ -74,26 +103,42 @@ class OursMCTSQuestionSample(MCTSQuestionSample):
             ax1, ay1, ax2, ay2 = box_a
             bx1, by1, bx2, by2 = box_b
             return ax1 >= bx1 and ay1 >= by1 and ax2 <= bx2 and ay2 <= by2
-            
+
         confirmed_bboxes = []
         model_name = Path(self.args.model_path).name
         if "qwen3-vl" in model_name.lower():
             prompt = f"""I will provide you an image and a question: {self.row['question']}. Please first review the provided images and determine whether the provided image contains the clues for answering the question or not. Give the brief reason and evidence of your decision, and then answer with **Yes** or **No."""
         else:
             prompt = f"""I will provide you an image and a **question** {self.row['question']}, please firstly determine wether the image contains the clues for answering the question or not (answer with **Yes** or **No**); then give the evidence of your decision."""
-        
+
+        # Save binary judgement prompt
+        if artifacts.is_enabled(self):
+            stage_dir = artifacts.stage_dir(self, "hierarchical-scanning")
+            artifacts.save_text_file(stage_dir / "binary_judgement_prompt.txt", prompt)
+
+        judgement_results = []
         if TOP_K:
             for idx, obj in enumerate(found_objs[: TOP_K]):
                 image = obj['crop_img']
-                bbox = obj['bbox']  
+                bbox = obj['bbox']
                 response = await self.generate_local(prompt, image, max_tokens=256)
                 print(
                     "[trace:ours:justify] "
                     f"proposal={idx} bbox={bbox} response={response.replace(chr(10), ' ')[:300]!r}"
                 )
-               
-                if 'yes' in response.lower():
+                accepted = 'yes' in response.lower()
+                if accepted:
                     confirmed_bboxes.append(bbox)
+
+                if artifacts.is_enabled(self):
+                    stage_dir = artifacts.stage_dir(self, "hierarchical-scanning/proposals")
+                    artifacts.save_json(stage_dir / f"proposal_{idx:02d}_judgement.json", {
+                        "proposal_index": idx,
+                        "bbox_resized_frame": bbox,
+                        "accepted": accepted,
+                        "raw_response": response,
+                        "prompt": prompt
+                    })
         else:
             for idx, obj in enumerate(found_objs):
                 image = obj['crop_img']
@@ -104,8 +149,19 @@ class OursMCTSQuestionSample(MCTSQuestionSample):
                     "[trace:ours:justify] "
                     f"proposal={idx} bbox={bbox} response={response.replace(chr(10), ' ')[:300]!r}"
                 )
-                if 'yes' in response.lower():
+                accepted = 'yes' in response.lower()
+                if accepted:
                     confirmed_bboxes.append(bbox)
+
+                if artifacts.is_enabled(self):
+                    stage_dir = artifacts.stage_dir(self, "hierarchical-scanning/proposals")
+                    artifacts.save_json(stage_dir / f"proposal_{idx:02d}_judgement.json", {
+                        "proposal_index": idx,
+                        "bbox_resized_frame": bbox,
+                        "accepted": accepted,
+                        "raw_response": response,
+                        "prompt": prompt
+                    })
 
         if not confirmed_bboxes:
             print("[trace:ours:justify] confirmed_bboxes=[]")

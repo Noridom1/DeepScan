@@ -64,6 +64,12 @@ async def run_single_sample(args: argparse.Namespace) -> None:
     results = []
     for round_idx in range(num_rounds):
         print(f"[trace:single] processing round_idx={round_idx} method={args.method_name}")
+        # Set up round-specific artifact directory if all-rounds is enabled
+        if args.save_artifacts and args.all_rounds and num_rounds > 1:
+            args.artifact_run_dir = os.path.join(args.artifact_dir_base, f"round-{round_idx}")
+            os.makedirs(args.artifact_run_dir, exist_ok=True)
+        elif args.save_artifacts:
+            args.artifact_run_dir = args.artifact_dir_base
         sample = QuestionSample(row, args, round_idx)
         result = await sample.process()
         print(
@@ -116,7 +122,22 @@ if __name__ == "__main__":
         return v.lower() == "true"
 
     parser.add_argument("--debug", type=str2bool, help="debug mode", default=False)
+    parser.add_argument("--save-artifacts", type=str2bool, help="save artifacts", default=False)
+    parser.add_argument("--artifact-dir", type=str, default="artifacts", help="directory to save artifacts")
     args = parser.parse_args()
+
+    # Set up artifact directory if enabled
+    if args.save_artifacts:
+        row = _select_row(pd.read_table(os.path.expanduser(args.question_file)), args)
+        sample_id = row.get("index") if "index" in row and row.get("index") is not None else args.row_idx
+        artifact_run_dir = os.path.expanduser(args.artifact_dir)
+        artifact_run_dir = os.path.join(artifact_run_dir, str(sample_id))
+        # Note: round-specific subdirectory will be appended by sample if --all-rounds is used
+        args.artifact_dir_base = artifact_run_dir
+        args.artifact_run_dir = artifact_run_dir  # Will be updated per round if needed
+    else:
+        args.artifact_run_dir = None
+        args.artifact_dir_base = None
 
     if args.debug:
         import debugpy
