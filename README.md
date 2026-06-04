@@ -270,7 +270,7 @@ Below is one example setup using **two RTX 4090 GPUs**:
 
 ```bash
 conda activate langsam
-bash code/scripts/expert_server/start_server.sh
+CUDA_VISIBLE_DEVICES=2 bash code/scripts/expert_server/start_server.sh
 ```
 
 Expected log:
@@ -288,7 +288,7 @@ INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
 
 ```bash
 conda activate lavis
-bash code/scripts/blip_server/start_server.sh
+CUDA_VISIBLE_DEVICES=2 bash code/scripts/blip_server/start_server.sh
 ```
 
 Expected log:
@@ -306,7 +306,7 @@ INFO:     Uvicorn running on http://0.0.0.0:8100 (Press CTRL+C to quit)
 
 ```bash
 conda activate langsam
-bash code/scripts/sam2_server/start_server.sh
+CUDA_VISIBLE_DEVICES=2 bash code/scripts/sam2_server/start_server.sh
 ```
 
 Expected log:
@@ -356,13 +356,15 @@ You may also invoke the main entry point directly through `code/src/run.py`, dep
 Use the TSV dataset in `playground/data/eval/vstar` (it includes a base64 `image` column). Select a sample by its `index` column or by row order:
 
 ```bash
-python code/src/run_single_sample.py \
+CUDA_VISIBLE_DEVICES=3 python code/src/run_single_sample.py \
   --question-file playground/data/eval/vstar/test_questions.tsv \
   --index 0 \
   --answers-file /tmp/out.jsonl \
-  --model-path <ckpt> \
+  --model-path models/Qwen3-VL-8B-Instruct/ \
   --method_name vstar.oursmcts \
-  --image-size 1024
+  --image-size 1024 \
+  --save-artifacts true \
+  --artifact-dir artifacts
 ```
 
 To select by row order instead of the `index` column, replace `--index 0` with `--row-idx 0`.

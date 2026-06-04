@@ -5,6 +5,9 @@ from PIL import Image
 from typing import List, Tuple, Dict, Any
 from .client import get_heatmap, get_mask_point
 from .control_point_sam import filter_heatmap_and_find_centroids, visualize_highlighted_regions, filter_heatmap_and_find_control_points, cluster_centroids_for_prompts
+from log import get_logger
+
+logger = get_logger("grounding")
 
 
 def filter_points_by_mask(
@@ -128,7 +131,7 @@ def iterative_segmentation_from_heatmap(
     
         mask_np = get_mask_point(image_b64, current_point, endpoint=sam_endpoint)
         if mask_np is None or mask_np.size == 0 or np.all(mask_np == 0):
-            print(f"[!] warning, point {current_point} can not remark any evidence, skip")
+            logger.warning("point %s produced empty SAM mask, skipping", current_point)
             continue
             
         found_objects.append({

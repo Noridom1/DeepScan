@@ -2,6 +2,9 @@ import base64, io, requests, cv2
 import numpy as np
 from PIL import Image
 from typing import List, Tuple
+from log import get_logger
+
+logger = get_logger("client")
 
 
 def get_heatmap(raw_image: str, 
@@ -54,7 +57,7 @@ def get_mask_point(
         resp.raise_for_status()
         data = resp.json()
     except requests.exceptions.RequestException as e:
-        print(f"API request error: {e}")
+        logger.error("SAM2 API request error: %s", e)
         raise
 
     mask_info = data["mask"]

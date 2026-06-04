@@ -1,14 +1,18 @@
 from abc import ABC, abstractmethod
 from utils import get_options, get_openai_clients_and_models
 from qwen_runtime import get_qwen_runtime
+from log import get_logger
 
 import shortuuid
 import base64
 import io, os, time
-import asyncio 
+import asyncio
+import traceback
 from PIL import Image
 from openai import AsyncOpenAI
 from aiolimiter import AsyncLimiter
+
+logger = get_logger("policy")
 
 
 class QuestionSample(ABC):
@@ -99,9 +103,7 @@ class QuestionSample(ABC):
         try:
             return await self._process()
         except Exception as e:
-            import traceback
-            print(f"Error processing sample: {e}")
-            print(f"Error stack:\n{traceback.format_exc()}")
+            logger.error("error processing sample: %s\n%s", e, traceback.format_exc())
             return {
                 "question_id": self.row['index'],
                 "round_id": self.round_idx,

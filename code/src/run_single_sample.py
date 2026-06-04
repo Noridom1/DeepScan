@@ -5,8 +5,11 @@ import os
 
 import pandas as pd
 
+from log import configure as log_configure, get_logger
 from utils import get_options, is_none
 from policies import policy_map
+
+logger = get_logger("single")
 
 
 def _select_row(questions: pd.DataFrame, args: argparse.Namespace) -> dict:
@@ -29,7 +32,7 @@ def _select_row(questions: pd.DataFrame, args: argparse.Namespace) -> dict:
     if matches.empty:
         raise ValueError(f"No sample found with index={args.index}.")
     if len(matches) > 1:
-        print(f"Warning: multiple rows matched index={args.index}; using the first match.")
+        logger.warning("multiple rows matched index=%s; using the first match.", args.index)
     return matches.iloc[0].to_dict()
 
 
@@ -43,13 +46,12 @@ def _ensure_image_base64(row: dict) -> None:
 
 async def run_single_sample(args: argparse.Namespace) -> None:
     questions = pd.read_table(os.path.expanduser(args.question_file))
-    print(f"[trace:single] loaded {len(questions)} rows from {args.question_file}")
+    logger.info("loaded %d rows from %s", len(questions), args.question_file)
     row = _select_row(questions, args)
     _ensure_image_base64(row)
-    print(
-        "[trace:single] selected "
-        f"index={row.get('index')} category={row.get('category')} "
-        f"question={row.get('question')!r}"
+    logger.info(
+        "selected index=%s category=%s question=%r",
+        row.get("index"), row.get("category"), row.get("question"),
     )
 
     if args.method_name not in policy_map:
@@ -63,7 +65,7 @@ async def run_single_sample(args: argparse.Namespace) -> None:
     QuestionSample = policy_map[args.method_name]
     results = []
     for round_idx in range(num_rounds):
-        print(f"[trace:single] processing round_idx={round_idx} method={args.method_name}")
+        logger.info("processing round_idx=%d method=%s", round_idx, args.method_name)
         # Set up round-specific artifact directory if all-rounds is enabled
         if args.save_artifacts and args.all_rounds and num_rounds > 1:
             args.artifact_run_dir = os.path.join(args.artifact_dir_base, f"round-{round_idx}")
@@ -72,10 +74,9 @@ async def run_single_sample(args: argparse.Namespace) -> None:
             args.artifact_run_dir = args.artifact_dir_base
         sample = QuestionSample(row, args, round_idx)
         result = await sample.process()
-        print(
-            "[trace:single] result "
-            f"question_id={result.get('question_id')} text={result.get('text')!r} "
-            f"answer={result.get('answer')!r}"
+        logger.info(
+            "result question_id=%s text=%r answer=%r",
+            result.get("question_id"), result.get("text"), result.get("answer"),
         )
         results.append(result)
 
@@ -87,7 +88,7 @@ async def run_single_sample(args: argparse.Namespace) -> None:
     with open(answers_file, "w") as f:
         for result in results:
             f.write(json.dumps(result) + "\n")
-    print(f"[trace:single] wrote {len(results)} result(s) to {answers_file}")
+    logger.info("wrote %d result(s) to %s", len(results), answers_file)
 
 
 if __name__ == "__main__":
@@ -124,7 +125,16 @@ if __name__ == "__main__":
     parser.add_argument("--debug", type=str2bool, help="debug mode", default=False)
     parser.add_argument("--save-artifacts", type=str2bool, help="save artifacts", default=False)
     parser.add_argument("--artifact-dir", type=str, default="artifacts", help="directory to save artifacts")
+    parser.add_argument(
+        "--log-level",
+        type=str,
+        default=None,
+        choices=["debug", "info", "warning", "error", "off"],
+        help="Logging verbosity (default: info, or DEEPSCAN_LOG_LEVEL env var).",
+    )
     args = parser.parse_args()
+
+    log_configure(args.log_level)
 
     # Set up artifact directory if enabled
     if args.save_artifacts:
@@ -143,9 +153,9 @@ if __name__ == "__main__":
         import debugpy
 
         debugpy.listen(5678)
-        print("Waiting for debugpy connection...")
+        logger.info("waiting for debugpy connection on port 5678")
         debugpy.wait_for_client()
-        print("Breakpoint stopped here, ready for debugging...")
+        logger.info("debugger attached, resuming")
         debugpy.breakpoint()
 
     asyncio.run(run_single_sample(args))

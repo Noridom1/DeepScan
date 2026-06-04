@@ -215,3 +215,45 @@ def save_text_file(path: Path, text: str) -> None:
         return
     with open(path, "w") as f:
         f.write(text)
+
+
+def save_search_tree(path: Path, all_nodes: list) -> None:
+    """Serialise the MCTS tree as a flat node list (no image data).
+
+    Node IDs match the indices used in reasoning/node_XX/ artifact dirs,
+    because both use the same all_nodes list from get_final_answer().
+    Parent lookup uses object identity via id(node).
+    """
+    if path is None:
+        return
+
+    id_map = {id(node): idx for idx, node in enumerate(all_nodes)}
+
+    nodes_out = []
+    for idx, node in enumerate(all_nodes):
+        parent_id = None
+        action_taken = None
+        if node.parent is not None:
+            parent_id = id_map.get(id(node.parent))
+            for act, child in node.parent.children.items():
+                if child is node:
+                    action_taken = act
+                    break
+
+        nodes_out.append({
+            "id": idx,
+            "parent_id": parent_id,
+            "action_taken": action_taken,
+            "depth": node.state["depth"],
+            "region_coords": node.state.get("region_coords"),
+            "valid_area_ratio": node.valid_area_ratio,
+            "leaf_reward": node.leaf_reward,
+            "visits": node.visits,
+            "value": node.value,
+            "action_history": node.state.get("action_history", []),
+            "confirmed_objects": node.state.get("caption", ""),
+            "missing_objects": node.state.get("missing_objects", []),
+        })
+
+    with open(path, "w") as f:
+        json.dump({"nodes": nodes_out}, f, indent=2, default=str)
